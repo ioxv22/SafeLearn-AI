@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
-import { Video, X, PlayCircle, Youtube } from 'lucide-react';
+import { Video, X, PlayCircle, PlaySquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const VideoModal = () => {
@@ -35,7 +35,7 @@ export const VideoModal = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="bg-red-500/20 p-3 rounded-xl text-red-500">
-                <Youtube size={28} />
+                <PlaySquare size={28} />
               </div>
               <div>
                 <h2 className="text-2xl font-bold">المكتبة المرئية الذكية</h2>
