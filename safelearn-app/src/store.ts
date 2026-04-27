@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export type UserLevel = 'weak' | 'medium' | 'advanced';
 export type ViewMode = 'chat' | 'dashboard';
 export type UserRole = 'student' | 'teacher' | null;
+export type Subject = 'رياضيات' | 'علوم' | 'لغة عربية' | 'تربية إسلامية' | 'عام';
 
 export interface User {
   name: string;
@@ -15,6 +16,7 @@ export interface Message {
   role: 'user' | 'ai';
   content: string;
   timestamp: Date;
+  image?: string; // Base64 image
 }
 
 interface AppState {
@@ -39,6 +41,9 @@ interface AppState {
   
   userLevel: UserLevel;
   setUserLevel: (level: UserLevel) => void;
+
+  currentSubject: Subject;
+  setCurrentSubject: (subject: Subject) => void;
   
   messages: Message[];
   addMessage: (msg: Message) => void;
@@ -77,12 +82,15 @@ export const useStore = create<AppState>((set) => ({
   
   userLevel: 'medium',
   setUserLevel: (level) => set({ userLevel: level }),
+
+  currentSubject: 'عام',
+  setCurrentSubject: (subject) => set({ currentSubject: subject }),
   
   messages: [
     {
       id: '1',
       role: 'ai',
-      content: 'مرحباً! أنا SafeLearn AI، معلمك الذكي. يمكنني الآن فهم السياق وتقييم إجاباتك بشكل دقيق. كما يمكنك توليد فيديوهات تعليمية للمفاهيم الصعبة!',
+      content: 'مرحباً! أنا SafeLearn AI، معلمك الذكي. اختر المادة التي تريد مراجعتها من الأعلى، أو اطلب مني إعداد امتحان قصير لك، ويمكنك أيضاً إرسال صور للأسئلة وسأساعدك في فهمها!',
       timestamp: new Date()
     }
   ],

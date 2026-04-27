@@ -11,6 +11,10 @@ const DEMO_VIDEOS: Record<string, string> = {
   'نيوتن': 'kKKM8Y-u7ds', // قوانين نيوتن
   'فضاء': 'q_P2Y7x4rGE', // الثقوب السوداء (Kurzgesagt)
   'مناعة': 'm2zCqO34JbE', // الجهاز المناعي
+  'صلاة': 'vFf4Yt_m7V8', // تعليم الصلاة (تربية إسلامية)
+  'وضوء': 'vFf4Yt_m7V8',
+  'نحو': '1xT7m_U5j5k', // شرح النحو (عربي)
+  'اعراب': '1xT7m_U5j5k',
   'افتراضي': 'm2zCqO34JbE' // فيديو تعليمي عام
 };
 
@@ -82,7 +86,7 @@ export const VideoModal = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="ما الذي تريد أن تفهمه؟ (أمثلة للمسابقة: كيف يعمل القلب، الانقسام الخلوي، المناعة)..."
+                placeholder="ما الذي تريد أن تفهمه؟ (أمثلة للمسابقة: كيف يعمل القلب، الانقسام الخلوي، الصلاة، النحو)..."
                 className="w-full bg-background border border-border rounded-xl py-4 pr-4 pl-32 outline-none focus:ring-2 focus:ring-red-500 text-sm"
               />
               <button 
