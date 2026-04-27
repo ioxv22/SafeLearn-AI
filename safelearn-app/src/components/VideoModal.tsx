@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
-import { Video, X, Loader2, PlayCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Video, X, Loader2, PlayCircle, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const VideoModal = () => {
   const { isVideoModalOpen, setVideoModalOpen } = useStore();
@@ -9,6 +9,7 @@ export const VideoModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [isFastMode, setIsFastMode] = useState(true);
 
   if (!isVideoModalOpen) return null;
 
@@ -18,17 +19,20 @@ export const VideoModal = () => {
     setError('');
     setVideoUrl(null);
 
+    // Prepare fastest possible model settings for quick demos
+    const payload = {
+      prompt: `Educational animation explaining: ${prompt}`,
+      model: isFastMode ? "Seedance 1.0 Lite" : "Seedance 1.5 Pro",
+      duration: isFastMode ? 5 : 8,
+      resolution: isFastMode ? "480p" : "720p",
+      aspect_ratio: "16:9"
+    };
+
     try {
       const response = await fetch('/api/video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `Educational 3D animation explaining: ${prompt}`,
-          model: "Seedance 1.5 Pro",
-          duration: 8,
-          resolution: "720p",
-          aspect_ratio: "16:9"
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
@@ -39,7 +43,7 @@ export const VideoModal = () => {
       }
     } catch (err) {
       console.error(err);
-      setError('حدث خطأ أثناء الاتصال بصانع الفيديوهات (Seedance API). يرجى المحاولة لاحقاً.');
+      setError('حدث خطأ أثناء الاتصال بالخادم. يرجى إعادة المحاولة.');
     } finally {
       setIsLoading(false);
     }
@@ -61,14 +65,27 @@ export const VideoModal = () => {
         </button>
 
         <div className="p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-purple-500/20 p-3 rounded-xl text-purple-500">
-              <Video size={28} />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-500/20 p-3 rounded-xl text-purple-500">
+                <Video size={28} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">صانع الشروحات المرئية</h2>
+                <p className="text-sm text-foreground/60">مدعوم بتقنية Seedance AI</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold">صانع الشروحات المرئية</h2>
-              <p className="text-sm text-foreground/60">مدعوم بتقنية Seedance AI لتحويل النصوص العلمية لفيديو</p>
-            </div>
+            <button 
+              onClick={() => setIsFastMode(!isFastMode)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${
+                isFastMode 
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' 
+                  : 'bg-background border-border text-foreground/50 hover:bg-border/50'
+              }`}
+            >
+              <Zap size={16} />
+              {isFastMode ? 'الوضع السريع مفعل (Lite)' : 'وضع الجودة العالية (Pro)'}
+            </button>
           </div>
 
           <div className="space-y-4">
@@ -101,7 +118,9 @@ export const VideoModal = () => {
               {isLoading ? (
                 <div className="text-center text-white/70 flex flex-col items-center gap-3">
                   <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-                  <p className="text-sm font-medium animate-pulse">جاري بناء المشاهد ثلاثية الأبعاد...</p>
+                  <p className="text-sm font-medium animate-pulse">
+                    {isFastMode ? "جاري بناء فيديو سريع (5 ثوانٍ)..." : "جاري بناء فيديو عالي الجودة (قد يستغرق وقتاً طويلاً)..."}
+                  </p>
                 </div>
               ) : videoUrl ? (
                 <video 
