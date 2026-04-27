@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
-import { Video, X, PlayCircle, Wand2, Youtube, AlertCircle } from 'lucide-react';
+import { Video, X, PlayCircle, Wand2, PlaySquare, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const DEMO_VIDEOS: Record<string, string> = {
@@ -105,7 +105,7 @@ export const VideoModal = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className={mode === 'ai' ? "bg-purple-500/20 p-3 rounded-xl text-purple-500" : "bg-red-500/20 p-3 rounded-xl text-red-500"}>
-                {mode === 'ai' ? <Wand2 size={28} /> : <Youtube size={28} />}
+                {mode === 'ai' ? <Wand2 size={28} /> : <PlaySquare size={28} />}
               </div>
               <div>
                 <h2 className="text-2xl font-bold">
