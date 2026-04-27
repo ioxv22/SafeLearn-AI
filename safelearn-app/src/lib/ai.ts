@@ -1,12 +1,11 @@
 import { useStore } from '../store';
 
 export const generateAIResponse = async (userMessage: string): Promise<string> => {
-  const { safeMode, examMode, userLevel, incrementCheatAttempts } = useStore.getState();
+  const { safeMode, examMode, userLevel, incrementCheatAttempts, messages } = useStore.getState();
   const text = userMessage.trim();
   
   if (!text) return "عفواً، لم أتمكن من قراءة رسالتك.";
 
-  // Detect Cheat Attempts
   const cheatKeywords = ['حل', 'اعطني', 'اجابة', 'الجواب', 'كامل', 'solve', 'answer', 'تعبت'];
   const isCheating = cheatKeywords.some(kw => text.toLowerCase().includes(kw));
   
@@ -14,27 +13,35 @@ export const generateAIResponse = async (userMessage: string): Promise<string> =
     incrementCheatAttempts();
   }
 
-  // Define System Prompt based on Mode
+  // Get recent context
+  const recentMessages = messages.slice(-4).map(m => `${m.role === 'user' ? 'الطالب' : 'المعلم'}: ${m.content}`).join('\n');
+
   let systemPrompt = "";
 
   if (examMode) {
-    systemPrompt = `أنت نظام تقييم امتحانات (Exam Mode Validator). الطالب قدم إجابة.
-مهمتك: فقط تقييم ما إذا كانت إجابته صحيحة أم خاطئة بشكل احترافي، وإعطاؤه درجته، مع شرح بسيط للخطأ إن وجد.
-ممنوع إعطاء تلميحات، التقييم يكون نهائياً.
-رسالة الطالب (الإجابة): ${text}`;
+    systemPrompt = `أنت نظام تقييم امتحانات (Exam Mode Validator).
+السياق السابق:
+${recentMessages}
+
+الطالب قدم الآن إجابة أو عبارة: "${text}"
+مهمتك:
+1. إذا كانت إجابة لسؤال سابق، قيمها.
+2. إذا كانت عبارة مستقلة (مثل 4=2+2)، قم بتقييم صحتها كعبارة مستقلة تماماً وتجاهل الأسئلة السابقة.
+التقييم يكون: صحيح أو خاطئ مع شرح مبسط جداً. ممنوع إعطاء تلميحات لأسئلة أخرى.`;
   } else {
     systemPrompt = `أنت SafeLearn AI، معلم ذكي أخلاقي مصمم لمساعدة الطلاب. 
-قاعدة صارمة جداً: لا تعطِ الإجابة النهائية أو الحل المباشر أبداً.
-عليك مساعدة الطالب خطوة بخطوة من خلال طرح أسئلة توجيهية تجعله يفكر بنفسه.
-مستوى الطالب الحالي: ${userLevel === 'weak' ? 'ضعيف (يحتاج أمثلة مبسطة جداً)' : userLevel === 'medium' ? 'متوسط (يحتاج توجيه للخطوة القادمة)' : 'متقدم (يحتاج تلميحات ذكية فقط)'}.
-إذا طلب الطالب حلاً جاهزاً، اعتذر بأدب واطلب منه التفكير في الخطوة الأولى.
-إذا كان وضع الأمان مفعل (${safeMode})، يجب أن تكون صارماً أكثر في عدم كشف الحل.
+قاعدة صارمة جداً: لا تعطِ الإجابة النهائية المباشرة. ساعد الطالب خطوة بخطوة بطرح أسئلة توجيهية.
+مستوى الطالب الحالي: ${userLevel === 'weak' ? 'ضعيف (يحتاج أمثلة مبسطة)' : userLevel === 'medium' ? 'متوسط' : 'متقدم (يحتاج تلميحات ذكية فقط)'}.
+إذا طلب الطالب حلاً جاهزاً أو حاول استخراج الإجابة، اعتذر بأدب واطلب منه التفكير.
+إذا طلب الطالب "شرح فيديو"، أخبره أن بإمكانه استخدام "صانع الشروحات" من القائمة الجانبية لتوليد فيديو تعليمي.
 
-سؤال أو رد الطالب: ${text}`;
+السياق السابق:
+${recentMessages}
+
+رسالة الطالب الحالية: ${text}`;
   }
 
   try {
-    // API Call
     const apiUrl = `/api/chat?text=${encodeURIComponent(systemPrompt)}`;
     const response = await fetch(apiUrl);
     
@@ -47,7 +54,7 @@ export const generateAIResponse = async (userMessage: string): Promise<string> =
   } catch (error) {
     console.error("AI Error:", error);
     if (examMode) {
-      return "تم استلام إجابتك. جاري تقييمها في النظام.";
+      return "تم استلام إجابتك وتقييمها. تأكد من صحة العمليات الحسابية.";
     }
     if (isCheating) {
       return "لا أستطيع إعطاء الحل المباشر. دعنا نفكر معاً، ما هي أول خطوة تراها مناسبة؟";

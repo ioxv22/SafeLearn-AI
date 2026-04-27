@@ -33,6 +33,9 @@ interface AppState {
   
   examMode: boolean;
   toggleExamMode: () => void;
+
+  isVideoModalOpen: boolean;
+  setVideoModalOpen: (isOpen: boolean) => void;
   
   userLevel: UserLevel;
   setUserLevel: (level: UserLevel) => void;
@@ -68,6 +71,9 @@ export const useStore = create<AppState>((set) => ({
   
   examMode: false,
   toggleExamMode: () => set((state) => ({ examMode: !state.examMode, safeMode: !state.examMode ? true : state.safeMode })),
+
+  isVideoModalOpen: false,
+  setVideoModalOpen: (isOpen) => set({ isVideoModalOpen: isOpen }),
   
   userLevel: 'medium',
   setUserLevel: (level) => set({ userLevel: level }),
@@ -76,7 +82,7 @@ export const useStore = create<AppState>((set) => ({
     {
       id: '1',
       role: 'ai',
-      content: 'مرحباً! أنا SafeLearn AI، معلمك الذكي. أنا هنا لأساعدك على التفكير خطوة بخطوة، وليس لإعطائك إجابات جاهزة. ماذا تريد أن نتعلم اليوم؟',
+      content: 'مرحباً! أنا SafeLearn AI، معلمك الذكي. يمكنني الآن فهم السياق وتقييم إجاباتك بشكل دقيق. كما يمكنك توليد فيديوهات تعليمية للمفاهيم الصعبة!',
       timestamp: new Date()
     }
   ],

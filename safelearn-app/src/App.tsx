@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Chat } from './components/Chat';
 import { Dashboard } from './components/Dashboard';
 import { Login } from './components/Login';
+import { VideoModal } from './components/VideoModal';
 import { useStore } from './store';
 import { Sun, Moon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -39,6 +40,7 @@ function App() {
             <main className="flex-1 flex flex-col h-full overflow-hidden relative">
               {viewMode === 'chat' ? <Chat /> : <Dashboard />}
             </main>
+            <VideoModal />
           </motion.div>
         )}
       </AnimatePresence>

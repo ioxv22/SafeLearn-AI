@@ -10,6 +10,11 @@ export default defineConfig({
         target: 'http://de3.bot-hosting.net:21007/kilwa-chat',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/chat/, '')
+      },
+      '/api/video': {
+        target: 'https://zecora0.serv00.net/ai/Seedance.php',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/video/, '')
       }
     }
   }

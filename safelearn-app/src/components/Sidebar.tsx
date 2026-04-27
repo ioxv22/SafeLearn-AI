@@ -1,10 +1,10 @@
 import React from 'react';
 import { useStore } from '../store';
-import { BrainCircuit, MessageSquare, LayoutDashboard, Shield, ShieldAlert, GraduationCap, Flame, Target, LogOut } from 'lucide-react';
+import { BrainCircuit, MessageSquare, LayoutDashboard, Shield, ShieldAlert, Flame, Target, LogOut, Video } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const Sidebar = () => {
-  const { currentUser, logout, viewMode, setViewMode, safeMode, toggleSafeMode, examMode, toggleExamMode, userLevel, stats } = useStore();
+  const { currentUser, logout, viewMode, setViewMode, safeMode, toggleSafeMode, examMode, toggleExamMode, userLevel, stats, setVideoModalOpen } = useStore();
 
   return (
     <aside className="w-72 bg-sidebar border-r border-border flex flex-col h-full transition-colors relative">
@@ -26,6 +26,16 @@ export const Sidebar = () => {
           <MessageSquare size={18} />
           <span>المعلم الذكي</span>
         </button>
+        
+        {currentUser?.role === 'student' && (
+          <button 
+            onClick={() => setVideoModalOpen(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-transparent hover:border-purple-500/30"
+          >
+            <Video size={18} />
+            <span>صانع الشروحات (فيديو)</span>
+          </button>
+        )}
         
         {currentUser?.role === 'teacher' && (
           <button 
