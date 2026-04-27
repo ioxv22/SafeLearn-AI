@@ -13,22 +13,22 @@ const PORT = 3000;
 app.post('/api/chat', async (req, res) => {
     try {
         const { text } = req.body;
-        
+
         // Build prompt for KILWA-CHAT simulating the SafeLearn behavior
         const safeLearnPrompt = `أنت SafeLearn AI، مساعد تعليمي أخلاقي. لا تعطي الإجابة النهائية أبداً. وجه الطالب خطوة بخطوة بالأسئلة. الطالب يقول: ${text}`;
-        
+
         const apiUrl = `http://de3.bot-hosting.net:21007/kilwa-chat?text=${encodeURIComponent(safeLearnPrompt)}`;
-        
+
         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`API returned status ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Clean up response if it contains JSON or weird formatting
         let reply = data.reply || "عذراً، حدث خطأ في النظام.";
-        
+
         res.json({
             success: true,
             reply: reply
@@ -43,10 +43,10 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/video', async (req, res) => {
     try {
         const { prompt } = req.body;
-        
+
         // Add educational context to video prompt
         const videoPrompt = `Educational 3D animation, highly detailed, explaining: ${prompt}`;
-        
+
         const response = await fetch('https://zecora0.serv00.net/ai/Seedance.php', {
             method: 'POST',
             headers: {
@@ -60,13 +60,13 @@ app.post('/api/video', async (req, res) => {
                 aspect_ratio: "16:9"
             })
         });
-        
+
         if (!response.ok) {
             throw new Error(`Video API returned status ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.data && data.data.video_url) {
             res.json({
                 success: true,

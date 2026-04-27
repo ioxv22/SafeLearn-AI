@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useStore, Subject } from '../store';
+import { useStore } from '../store';
 import { generateAIResponse } from '../lib/ai';
 import { Send, Bot, User, Loader2, Mic, AlertOctagon, Image as ImageIcon, BookOpen, FileText } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SUBJECTS: Subject[] = ['رياضيات', 'علوم', 'لغة عربية', 'تربية إسلامية', 'عام'];
+const SUBJECTS = ['رياضيات', 'علوم', 'لغة عربية', 'تربية إسلامية', 'عام'];
 
 export const Chat = () => {
   const { messages, addMessage, examMode, cheatAttempts, currentSubject, setCurrentSubject, currentUser } = useStore();
