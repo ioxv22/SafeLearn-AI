@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeLearn AI - منصة التعليم الأخلاقي</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container glass-panel">
+        <div class="login-header">
+            <i class="fa-solid fa-brain logo-icon"></i>
+            <h1>SafeLearn AI</h1>
+            <p>التعليم الذكي بأمان ومصداقية</p>
+        </div>
+        
+        <form id="loginForm" class="login-form">
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="emailInput" placeholder="البريد الإلكتروني الجامعي / المدرسي" required value="student@university.edu">
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="passwordInput" placeholder="كلمة المرور" required value="123456">
+            </div>
+            
+            <button type="submit" class="btn-glow">
+                <span>تسجيل الدخول</span>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            
+            <div class="login-footer">
+                <p>نظام مدعوم بالذكاء الاصطناعي الأخلاقي (Zero-Cheating)</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- App Page -->
+    <div id="appPage" class="container glass-panel hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <h2>SafeLearn</h2>
+            </div>
+            <nav class="menu">
+                <a href="#" class="active"><i class="fa-solid fa-robot"></i> المعلم الذكي</a>
+                <a href="#"><i class="fa-solid fa-bolt"></i> توليد الشروحات <span class="badge">جديد</span></a>
+                <a href="#"><i class="fa-solid fa-chart-pie"></i> إحصائياتي</a>
+                <a href="#"><i class="fa-solid fa-gear"></i> الإعدادات</a>
+            </nav>
+            
+            <div class="mode-badge pulse-anim">
+                <i class="fa-solid fa-shield-check"></i> 
+                <div>
+                    <strong>الوضع الآمن مفعل</strong>
+                    <span>يمنع الإجابات المباشرة</span>
+                </div>
+            </div>
+            
+            <div class="logout-btn" id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header>
+                <div class="header-title">
+                    <h3>جلسة المذاكرة الحالية</h3>
+                    <p>المعلم الذكي مستعد للإجابة خطوة بخطوة</p>
+                </div>
+                <div class="header-actions">
+                    <button id="generateVideoBtn" class="btn-premium" title="توليد شرح مرئي">
+                        <i class="fa-solid fa-film"></i>
+                        <span>صانع الفيديو التعليمي</span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-text">
+                            <span class="user-name">الطالب التجريبي</span>
+                            <span class="user-level">المستوى: متقدم 🔥</span>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=St&background=6366f1&color=fff" alt="User Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <div class="chat-box" id="chatBox">
+                <div class="message bot-message">
+                    <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
+                    <div class="msg-content glass-msg">
+                        مرحباً بك في <strong>SafeLearn AI</strong>. أنا هنا لأرشدك خطوة بخطوة ولن أعطيك الإجابة الجاهزة لأن هدفي هو أن تفهم حقاً. ما هو المفهوم أو المسألة التي تود مناقشتها اليوم؟
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <button class="attach-btn"><i class="fa-solid fa-paperclip"></i></button>
+                    <input type="text" id="userInput" placeholder="اكتب سؤالك هنا (مثال: اشرح لي قانون نيوتن الثاني)..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <span class="close" id="closeModal">&times;</span>
+            <div class="modal-header">
+                <i class="fa-solid fa-video" style="color: #8b5cf6; font-size: 2rem;"></i>
+                <h3>مولد الشروحات (Seedance AI)</h3>
+            </div>
+            <p style="color: #94a3b8; margin-bottom: 20px;">حول أي مفهوم معقد إلى فيديو تعليمي بصري لتسهيل الفهم.</p>
+            
+            <div class="input-group">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <input type="text" id="videoPromptInput" placeholder="مثال: كيف يعمل المحرك النفاث؟">
+            </div>
+            
+            <button id="submitVideoBtn" class="btn-glow" style="width: 100%; margin-top: 15px;">
+                <span>توليد الفيديو التعليمي</span>
+            </button>
+            
+            <div id="videoContainer" class="video-container hidden">
+                <div class="loader" id="videoLoader">
+                    <div class="spinner"></div>
+                    <p>جاري بناء المشاهد... يرجى الانتظار</p>
+                </div>
+                <video id="resultVideo" controls class="hidden"></video>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
