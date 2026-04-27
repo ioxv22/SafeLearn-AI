@@ -41,6 +41,9 @@ interface AppState {
   addMessage: (msg: Message) => void;
   clearMessages: () => void;
   
+  cheatAttempts: number;
+  incrementCheatAttempts: () => void;
+  
   stats: {
     questionsAttempted: number;
     questionsSolved: number;
@@ -52,7 +55,7 @@ interface AppState {
 export const useStore = create<AppState>((set) => ({
   currentUser: null,
   login: (user) => set({ currentUser: user, viewMode: user.role === 'teacher' ? 'dashboard' : 'chat' }),
-  logout: () => set({ currentUser: null }),
+  logout: () => set({ currentUser: null, cheatAttempts: 0 }),
 
   viewMode: 'chat',
   setViewMode: (mode) => set({ viewMode: mode }),
@@ -79,6 +82,9 @@ export const useStore = create<AppState>((set) => ({
   ],
   addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
   clearMessages: () => set({ messages: [] }),
+  
+  cheatAttempts: 0,
+  incrementCheatAttempts: () => set((state) => ({ cheatAttempts: state.cheatAttempts + 1 })),
   
   stats: {
     questionsAttempted: 12,

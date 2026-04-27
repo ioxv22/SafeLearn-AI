@@ -1,21 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../store';
 import { generateAIResponse } from '../lib/ai';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, Mic, AlertOctagon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Chat = () => {
-  const { messages, addMessage, examMode } = useStore();
+  const { messages, addMessage, examMode, cheatAttempts } = useStore();
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isTyping]);
+  }, [messages, isTyping, cheatAttempts]);
+
+  // Voice Input Logic (Web Speech API)
+  const handleMicClick = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("متصفحك لا يدعم التعرف على الصوت.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ar-SA';
+    recognition.start();
+    setIsListening(true);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => prev + " " + transcript);
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -31,10 +59,9 @@ export const Chat = () => {
     });
 
     setIsTyping(true);
-    
     const aiResponse = await generateAIResponse(userText);
-    
     setIsTyping(false);
+    
     addMessage({
       id: (Date.now() + 1).toString(),
       role: 'ai',
@@ -48,9 +75,26 @@ export const Chat = () => {
       {/* Exam Mode Banner */}
       {examMode && (
         <div className="bg-red-500 text-white py-2 px-4 text-center text-sm font-bold shadow-md z-10 flex items-center justify-center gap-2">
-          <span className="animate-pulse">🔴</span> وضع الاختبار مفعل - لا توجد مساعدات أو تلميحات
+          <span className="animate-pulse">🔴</span> وضع الاختبار مفعل - يتم الآن تقييم إجاباتك مباشرة ولن يتم مساعدتك
         </div>
       )}
+
+      {/* Cheat Alert Banner */}
+      <AnimatePresence>
+        {cheatAttempts >= 3 && !examMode && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            className="bg-orange-500 text-white py-3 px-4 text-center text-sm font-bold shadow-md z-10 flex flex-col items-center justify-center gap-1"
+          >
+            <div className="flex items-center gap-2">
+              <AlertOctagon size={18} className="animate-bounce" /> 
+              <span>تنبيه نظام مكافحة الغش</span>
+            </div>
+            <p className="font-medium text-xs">لقد حاولت طلب الإجابة المباشرة عدة مرات. تم تسجيل محاولاتك في لوحة المعلم.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8" ref={scrollRef}>
@@ -63,14 +107,11 @@ export const Chat = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className={cn("flex gap-4 w-full", msg.role === 'user' ? "flex-row-reverse" : "flex-row")}
               >
-                {/* Avatar */}
                 <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm", msg.role === 'user' ? "bg-primary text-white" : "bg-emerald-500 text-white")}>
                   {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                 </div>
-                
-                {/* Bubble */}
                 <div className={cn(
-                  "px-6 py-4 rounded-2xl max-w-[85%] leading-relaxed text-[15px] shadow-sm", 
+                  "px-6 py-4 rounded-2xl max-w-[85%] leading-relaxed text-[15px] shadow-sm whitespace-pre-wrap", 
                   msg.role === 'user' 
                     ? "bg-primary text-white rounded-tr-sm" 
                     : "bg-sidebar border border-border text-foreground rounded-tl-sm"
@@ -91,7 +132,7 @@ export const Chat = () => {
               </div>
               <div className="px-6 py-4 rounded-2xl bg-sidebar border border-border text-foreground rounded-tl-sm flex items-center gap-2">
                 <Loader2 size={16} className="animate-spin text-emerald-500" />
-                <span className="text-sm text-foreground/60">المعلم يفكر...</span>
+                <span className="text-sm text-foreground/60">المعلم يحلل إجابتك...</span>
               </div>
             </motion.div>
           )}
@@ -100,25 +141,33 @@ export const Chat = () => {
 
       {/* Input Area */}
       <div className="p-4 bg-background border-t border-border w-full z-10">
-        <div className="max-w-4xl mx-auto relative flex items-center">
-          <input 
-            type="text" 
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={examMode ? "اكتب إجابتك النهائية هنا..." : "اسأل المعلم، لا تطلب الإجابة مباشرة..."}
-            className="w-full bg-sidebar border border-border rounded-full py-4 pr-6 pl-16 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-[15px]"
-          />
-          <button 
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping}
-            className="absolute left-2 w-12 h-12 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-          >
-            <Send size={20} className="-ml-1" />
-          </button>
+        <div className="max-w-4xl mx-auto relative flex items-center gap-2">
+          <div className="relative flex-1 flex items-center">
+            <input 
+              type="text" 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder={examMode ? "أدخل إجابتك النهائية للتقييم..." : isListening ? "جاري الاستماع..." : "اسأل المعلم بصوتك أو اكتب هنا..."}
+              className="w-full bg-sidebar border border-border rounded-full py-4 pr-6 pl-20 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-[15px]"
+            />
+            <button 
+              onClick={handleSend}
+              disabled={!input.trim() || isTyping}
+              className="absolute left-2 w-10 h-10 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            >
+              <Send size={18} className="-ml-1" />
+            </button>
+            <button 
+              onClick={handleMicClick}
+              className={cn("absolute left-14 w-10 h-10 rounded-full flex items-center justify-center transition-all", isListening ? "bg-red-500 text-white animate-pulse" : "bg-transparent hover:bg-border text-foreground/50")}
+            >
+              <Mic size={18} />
+            </button>
+          </div>
         </div>
         <p className="text-center text-xs text-foreground/40 mt-3 font-medium">
-          SafeLearn AI - مدعوم بنظام حماية التعلم ومنع الغش
+          SafeLearn AI - مدعوم بنظام حماية التعلم ومستشعرات الغش الذكية
         </p>
       </div>
     </div>
