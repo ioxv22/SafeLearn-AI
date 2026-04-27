@@ -12,9 +12,9 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/chat/, '')
       },
       '/api/video': {
-        target: 'https://zecora0.serv00.net/ai/Seedance.php',
+        target: 'http://de3.bot-hosting.net:21007',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/video/, '')
+        rewrite: (path) => path.replace(/^\/api\/video/, '/kilwa-video')
       }
     }
   }
