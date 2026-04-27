@@ -1,52 +1,19 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
-import { Video, X, Loader2, PlayCircle, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Video, X, PlayCircle, Youtube } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const VideoModal = () => {
   const { isVideoModalOpen, setVideoModalOpen } = useStore();
   const [prompt, setPrompt] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [error, setError] = useState('');
-  const [isFastMode, setIsFastMode] = useState(true);
+  const [videoQuery, setVideoQuery] = useState<string | null>(null);
 
   if (!isVideoModalOpen) return null;
 
-  const handleGenerate = async () => {
+  const handleSearch = () => {
     if (!prompt.trim()) return;
-    setIsLoading(true);
-    setError('');
-    setVideoUrl(null);
-
-    // Prepare fastest possible model settings for quick demos
-    const payload = {
-      prompt: `Educational animation explaining: ${prompt}`,
-      model: isFastMode ? "Seedance 1.0 Lite" : "Seedance 1.5 Pro",
-      duration: isFastMode ? 5 : 8,
-      resolution: isFastMode ? "480p" : "720p",
-      aspect_ratio: "16:9"
-    };
-
-    try {
-      const response = await fetch('/api/video', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-      if (data.success && data.data?.video_url) {
-        setVideoUrl(data.data.video_url);
-      } else {
-        throw new Error("فشل التوليد");
-      }
-    } catch (err) {
-      console.error(err);
-      setError('حدث خطأ أثناء الاتصال بالخادم. يرجى إعادة المحاولة.');
-    } finally {
-      setIsLoading(false);
-    }
+    // Embed a YouTube search playlist based on the prompt
+    setVideoQuery(encodeURIComponent(prompt + " شرح تعليمي"));
   };
 
   return (
@@ -55,7 +22,7 @@ export const VideoModal = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl bg-sidebar border border-border rounded-3xl shadow-2xl overflow-hidden relative"
+        className="w-full max-w-4xl bg-sidebar border border-border rounded-3xl shadow-2xl overflow-hidden relative"
       >
         <button 
           onClick={() => setVideoModalOpen(false)}
@@ -67,25 +34,18 @@ export const VideoModal = () => {
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="bg-purple-500/20 p-3 rounded-xl text-purple-500">
-                <Video size={28} />
+              <div className="bg-red-500/20 p-3 rounded-xl text-red-500">
+                <Youtube size={28} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">صانع الشروحات المرئية</h2>
-                <p className="text-sm text-foreground/60">مدعوم بتقنية Seedance AI</p>
+                <h2 className="text-2xl font-bold">المكتبة المرئية الذكية</h2>
+                <p className="text-sm text-foreground/60">جلب أفضل الشروحات التعليمية فورياً بدون انتظار</p>
               </div>
             </div>
-            <button 
-              onClick={() => setIsFastMode(!isFastMode)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${
-                isFastMode 
-                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' 
-                  : 'bg-background border-border text-foreground/50 hover:bg-border/50'
-              }`}
-            >
-              <Zap size={16} />
-              {isFastMode ? 'الوضع السريع مفعل (Lite)' : 'وضع الجودة العالية (Pro)'}
-            </button>
+            <div className="hidden md:flex bg-emerald-500/10 text-emerald-500 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-2 border border-emerald-500/20">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              سريع ومستقر 100%
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -94,45 +54,36 @@ export const VideoModal = () => {
                 type="text" 
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="مثال: كيف تنقسم الخلية الحية؟ اشرحها بصرياً..."
-                className="w-full bg-background border border-border rounded-xl py-4 pr-4 pl-32 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                placeholder="ما الذي تريد أن تفهمه؟ (مثال: الدورة الدموية، الانقسام الخلوي، قوانين نيوتن)..."
+                className="w-full bg-background border border-border rounded-xl py-4 pr-4 pl-32 outline-none focus:ring-2 focus:ring-red-500 text-sm"
               />
               <button 
-                onClick={handleGenerate}
-                disabled={isLoading || !prompt.trim()}
-                className="absolute left-2 top-2 bottom-2 px-6 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center gap-2"
+                onClick={handleSearch}
+                disabled={!prompt.trim()}
+                className="absolute left-2 top-2 bottom-2 px-6 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center gap-2"
               >
-                {isLoading ? <Loader2 size={18} className="animate-spin" /> : <PlayCircle size={18} />}
-                توليد
+                <PlayCircle size={18} />
+                بحث وعرض
               </button>
             </div>
 
-            {error && (
-              <div className="bg-red-500/10 text-red-500 p-3 rounded-xl text-sm font-medium">
-                {error}
-              </div>
-            )}
-
             {/* Video Player Area */}
-            <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/50 relative flex items-center justify-center">
-              {isLoading ? (
-                <div className="text-center text-white/70 flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-                  <p className="text-sm font-medium animate-pulse">
-                    {isFastMode ? "جاري بناء فيديو سريع (5 ثوانٍ)..." : "جاري بناء فيديو عالي الجودة (قد يستغرق وقتاً طويلاً)..."}
-                  </p>
-                </div>
-              ) : videoUrl ? (
-                <video 
-                  src={videoUrl} 
-                  controls 
-                  autoPlay 
-                  className="w-full h-full object-contain"
-                />
+            <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/50 relative flex items-center justify-center shadow-inner">
+              {videoQuery ? (
+                <iframe
+                  className="w-full h-full"
+                  src={`https://www.youtube.com/embed?listType=search&list=${videoQuery}`}
+                  title="YouTube Video Player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
               ) : (
                 <div className="text-center text-white/30">
-                  <Video size={48} className="mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">سيظهر الفيديو التعليمي هنا</p>
+                  <Video size={48} className="mx-auto mb-3 opacity-50" />
+                  <p className="text-sm font-medium">سيتم جلب أفضل فيديو تعليمي وعرضه هنا مباشرة</p>
+                  <p className="text-xs opacity-60 mt-1">لا حاجة للانتظار لتوليد الذكاء الاصطناعي</p>
                 </div>
               )}
             </div>
