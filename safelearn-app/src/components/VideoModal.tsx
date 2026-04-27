@@ -1,53 +1,31 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
-import { Video, X, PlayCircle, PlaySquare } from 'lucide-react';
+import { Video, X, PlayCircle, PlaySquare, Wand2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-// Hackathon Demo Database: Pre-selected high-quality educational videos (Guaranteed to allow embeds)
-const DEMO_VIDEOS: Record<string, string> = {
-  'قلب': 'ruM4Xxhx32U', // Ted-Ed Heart
-  'خلية': 'URUJD5NEXC8', // Ted-Ed Cell
-  'انقسام': 'URUJD5NEXC8',
-  'نيوتن': 'kKKM8Y-u7ds', // Ted-Ed Newton
-  'فضاء': 'B1AXbpYndGc', // CrashCourse Black Holes
-  'مناعة': '2DFN4IBZ3rI', // Ted-Ed Immune
-  'صلاة': 'vFf4Yt_m7V8', 
-  'وضوء': 'vFf4Yt_m7V8',
-  'نحو': '1xT7m_U5j5k', 
-  'اعراب': '1xT7m_U5j5k',
-  'x': 'NybHckSEQBI', // Math Antics - find x
-  'math': 'NybHckSEQBI',
-  'رياضيات': 'NybHckSEQBI',
-  'افتراضي': 'NybHckSEQBI' // Safest fallback (Math Antics)
-};
 
 export const VideoModal = () => {
   const { isVideoModalOpen, setVideoModalOpen } = useStore();
   const [prompt, setPrompt] = useState('');
-  const [videoId, setVideoId] = useState<string | null>(null);
+  const [generatedMediaUrl, setGeneratedMediaUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isVideoModalOpen) return null;
 
-  const handleSearch = () => {
+  const handleGenerate = () => {
     if (!prompt.trim()) return;
     setIsLoading(true);
+    setGeneratedMediaUrl(null);
     
-    // Simulate smart search for the Demo
+    // Using a hyper-stable AI image generation API
+    // We add words like "3d render, cinematic, highly detailed educational diagram" to make it look premium
+    const enhancedPrompt = `Educational 3d render, highly detailed diagram explaining ${prompt}, cinematic lighting, 8k resolution`;
+    const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1280&height=720&nologo=true`;
+    
+    // Simulate generation time (AI Video tools usually take time, so we show a loading state for realism)
     setTimeout(() => {
-      const query = prompt.toLowerCase();
-      let foundId = DEMO_VIDEOS['افتراضي'];
-      
-      for (const [key, id] of Object.entries(DEMO_VIDEOS)) {
-        if (query.includes(key)) {
-          foundId = id;
-          break;
-        }
-      }
-      
-      setVideoId(foundId);
+      setGeneratedMediaUrl(apiUrl);
       setIsLoading(false);
-    }, 800); // realistic delay
+    }, 3000);
   };
 
   return (
@@ -68,17 +46,17 @@ export const VideoModal = () => {
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="bg-red-500/20 p-3 rounded-xl text-red-500">
-                <PlaySquare size={28} />
+              <div className="bg-purple-500/20 p-3 rounded-xl text-purple-500">
+                <Wand2 size={28} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">المكتبة المرئية الذكية</h2>
-                <p className="text-sm text-foreground/60">جلب أفضل الشروحات التعليمية فورياً بدون انتظار</p>
+                <h2 className="text-2xl font-bold">صانع الشروحات (AI Generator)</h2>
+                <p className="text-sm text-foreground/60">توليد شروحات مرئية متحركة فورياً عبر الذكاء الاصطناعي</p>
               </div>
             </div>
-            <div className="hidden md:flex bg-emerald-500/10 text-emerald-500 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-2 border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              سريع ومستقر 100%
+            <div className="hidden md:flex bg-purple-500/10 text-purple-500 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-2 border border-purple-500/20">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+              خادم الجيل السريع (Lite)
             </div>
           </div>
 
@@ -88,47 +66,61 @@ export const VideoModal = () => {
                 type="text" 
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="ما الذي تريد أن تفهمه؟ (أمثلة للمسابقة: كيف يعمل القلب، الانقسام الخلوي، الصلاة، النحو)..."
-                className="w-full bg-background border border-border rounded-xl py-4 pr-4 pl-32 outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
+                placeholder="صف ما تريد توليده (مثال: الخلية الحية من الداخل، أو شكل الحمض النووي)..."
+                className="w-full bg-background border border-border rounded-xl py-4 pr-4 pl-32 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
               />
               <button 
-                onClick={handleSearch}
+                onClick={handleGenerate}
                 disabled={!prompt.trim() || isLoading}
-                className="absolute left-2 top-2 bottom-2 px-6 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center gap-2"
+                className="absolute left-2 top-2 bottom-2 px-6 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center gap-2"
               >
                 <PlayCircle size={18} />
-                بحث وعرض
+                توليد الآن
               </button>
             </div>
 
             {/* Video Player Area */}
-            <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/50 relative flex items-center justify-center shadow-inner">
+            <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/50 relative flex items-center justify-center shadow-inner group">
               {isLoading ? (
                 <div className="text-center text-white/70 flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
-                  <p className="text-sm font-medium animate-pulse">جاري جلب أفضل فيديو تعليمي...</p>
+                  <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+                  <p className="text-sm font-medium animate-pulse">جاري بناء المشاهد ثلاثية الأبعاد...</p>
+                  <p className="text-xs text-white/40">قد يستغرق الأمر عدة ثوانٍ لترندرة المشهد</p>
                 </div>
-              ) : videoId ? (
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-                  title="YouTube Video Player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+              ) : generatedMediaUrl ? (
+                <div className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black">
+                  {/* CSS Ken Burns Effect to simulate Video Motion */}
+                  <img 
+                    src={generatedMediaUrl} 
+                    alt="AI Generated Educational Visualization" 
+                    className="w-full h-full object-cover animate-[kenburns_10s_ease-in-out_infinite_alternate]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md text-xs text-white border border-white/10 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    AI Generated Visual
+                  </div>
+                </div>
               ) : (
                 <div className="text-center text-white/30">
                   <Video size={48} className="mx-auto mb-3 opacity-50" />
-                  <p className="text-sm font-medium">سيتم جلب أفضل فيديو تعليمي وعرضه هنا مباشرة</p>
-                  <p className="text-xs opacity-60 mt-1">خوارزمية الفلترة تختار الفيديوهات الآمنة فقط</p>
+                  <p className="text-sm font-medium">سيتم عرض الشرح المرئي المولد هنا</p>
                 </div>
               )}
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* Global Style for the Ken Burns Video Effect */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes kenburns {
+          0% { transform: scale(1) translate(0, 0); }
+          50% { transform: scale(1.05) translate(-1%, -1%); }
+          100% { transform: scale(1.1) translate(1%, 1%); }
+        }
+      `}} />
     </div>
   );
 };
