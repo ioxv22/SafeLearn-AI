@@ -16,16 +16,22 @@ export const VideoModal = () => {
     setIsLoading(true);
     setGeneratedMediaUrl(null);
     
-    // Using a hyper-stable AI image generation API
-    // We add words like "3d render, cinematic, highly detailed educational diagram" to make it look premium
+    // Add words to make it look like a 3D educational diagram
     const enhancedPrompt = `Educational 3d render, highly detailed diagram explaining ${prompt}, cinematic lighting, 8k resolution`;
     const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1280&height=720&nologo=true`;
     
-    // Simulate generation time (AI Video tools usually take time, so we show a loading state for realism)
-    setTimeout(() => {
+    // Preload image to wait for generation to finish completely
+    const img = new Image();
+    img.src = apiUrl;
+    img.onload = () => {
       setGeneratedMediaUrl(apiUrl);
       setIsLoading(false);
-    }, 3000);
+    };
+    img.onerror = () => {
+      // Fallback if generation fails
+      setGeneratedMediaUrl(`https://image.pollinations.ai/prompt/Educational%20diagram%20${encodeURIComponent(prompt)}?width=1280&height=720&nologo=true`);
+      setIsLoading(false);
+    };
   };
 
   return (
