@@ -3,19 +3,22 @@ import { useStore } from '../store';
 import { Video, X, PlayCircle, PlaySquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Hackathon Demo Database: Pre-selected high-quality educational videos
+// Hackathon Demo Database: Pre-selected high-quality educational videos (Guaranteed to allow embeds)
 const DEMO_VIDEOS: Record<string, string> = {
-  'قلب': 'ruM4Xxhx32U', // فيديو كيف يعمل القلب
-  'خلية': '8IlzKri08qC', // فيديو الخلية
-  'انقسام': '8IlzKri08qC',
-  'نيوتن': 'kKKM8Y-u7ds', // قوانين نيوتن
-  'فضاء': 'q_P2Y7x4rGE', // الثقوب السوداء (Kurzgesagt)
-  'مناعة': 'm2zCqO34JbE', // الجهاز المناعي
-  'صلاة': 'vFf4Yt_m7V8', // تعليم الصلاة (تربية إسلامية)
+  'قلب': 'ruM4Xxhx32U', // Ted-Ed Heart
+  'خلية': 'URUJD5NEXC8', // Ted-Ed Cell
+  'انقسام': 'URUJD5NEXC8',
+  'نيوتن': 'kKKM8Y-u7ds', // Ted-Ed Newton
+  'فضاء': 'B1AXbpYndGc', // CrashCourse Black Holes
+  'مناعة': '2DFN4IBZ3rI', // Ted-Ed Immune
+  'صلاة': 'vFf4Yt_m7V8', 
   'وضوء': 'vFf4Yt_m7V8',
-  'نحو': '1xT7m_U5j5k', // شرح النحو (عربي)
+  'نحو': '1xT7m_U5j5k', 
   'اعراب': '1xT7m_U5j5k',
-  'افتراضي': 'm2zCqO34JbE' // فيديو تعليمي عام
+  'x': 'NybHckSEQBI', // Math Antics - find x
+  'math': 'NybHckSEQBI',
+  'رياضيات': 'NybHckSEQBI',
+  'افتراضي': 'NybHckSEQBI' // Safest fallback (Math Antics)
 };
 
 export const VideoModal = () => {
