@@ -45,7 +45,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50" suppressHydrationWarning>
         <div className="relative">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500 border-t-transparent"></div>
           <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-500" size={24} />
@@ -56,7 +56,7 @@ export default function Home() {
 
   if (!currentUser) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 p-4">
+      <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 p-4" suppressHydrationWarning>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
