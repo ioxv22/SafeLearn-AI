@@ -180,72 +180,47 @@ export function StudentChat() {
   }
 
   return (
-    <div className="flex flex-col h-[750px] bg-white rounded-[3rem] shadow-2xl shadow-indigo-500/5 border border-slate-100 overflow-hidden" dir="rtl" suppressHydrationWarning>
-      {/* Header */}
-      <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
-        <div className="flex items-center gap-5">
-          <div className="relative">
-            <div className="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-indigo-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
-              <Bot size={28} />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-4 border-white rounded-full"></div>
+    <div className="flex flex-col h-[600px] bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden" dir="rtl" suppressHydrationWarning>
+      <div className="px-6 py-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm">
+            <Bot size={24} />
           </div>
           <div>
-            <h3 className="text-xl font-black text-slate-800 leading-none mb-2">{activeClass.name}</h3>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                <Sparkles size={10} /> الوضع الآمن
-              </span>
-              <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
-              <span className="text-[10px] font-bold text-slate-400">نشط الآن</span>
-            </div>
+            <h3 className="text-lg font-bold text-slate-800 leading-none mb-1">{activeClass.name}</h3>
+            <p className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+              <Sparkles size={10} /> الوضع الآمن نشط
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setActiveClass(null)} 
-            className="w-12 h-12 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-          >
-            <LogOut size={22} />
-          </button>
-        </div>
+        <button 
+          onClick={() => setActiveClass(null)} 
+          className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+        >
+          <LogOut size={20} />
+        </button>
       </div>
       
-      {/* Messages */}
-      <div className="flex-1 px-8 py-8 overflow-y-auto bg-slate-50/30 space-y-8 custom-scrollbar">
+      <div className="flex-1 px-6 py-6 overflow-y-auto bg-white space-y-6 custom-scrollbar">
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'} items-end gap-4`}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              {msg.role === 'user' && (
-                <div className="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 shrink-0 shadow-sm">
-                  <User size={20} />
-                </div>
-              )}
-              
-              <div className="flex flex-col gap-2 max-w-[80%]">
-                <div className={`p-5 rounded-[2rem] shadow-sm ${
-                  msg.role === 'user' 
-                    ? 'bg-white border border-slate-100 text-slate-800 rounded-br-none' 
-                    : 'bg-indigo-600 text-white rounded-bl-none shadow-indigo-100'
-                }`}>
-                  <p className="text-base leading-relaxed font-medium">{msg.content}</p>
-                </div>
-                <div className={`flex items-center gap-2 text-[10px] font-bold text-slate-300 ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                  <Clock size={10} />
+              <div className={`max-w-[80%] p-4 rounded-2xl shadow-sm ${
+                msg.role === 'user' 
+                  ? 'bg-indigo-600 text-white rounded-br-none' 
+                  : 'bg-slate-50 text-slate-800 rounded-bl-none border border-slate-100'
+              }`}>
+                <p className="text-sm leading-relaxed">{msg.content}</p>
+                <div className={`mt-2 text-[8px] opacity-50 flex items-center gap-1 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <Clock size={8} />
                   {msg.timestamp}
                 </div>
               </div>
-
-              {msg.role === 'assistant' && (
-                <div className="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 shadow-sm">
-                  <Bot size={20} />
-                </div>
-              )}
             </motion.div>
           ))}
           
@@ -253,15 +228,12 @@ export function StudentChat() {
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }}
-              className="flex justify-end items-center gap-4"
+              className="flex justify-start"
             >
-              <div className="bg-indigo-50 px-6 py-4 rounded-[1.5rem] rounded-bl-none flex gap-1.5 items-center">
-                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-              </div>
-              <div className="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
-                <Bot size={20} />
+              <div className="bg-slate-50 px-4 py-3 rounded-2xl rounded-bl-none flex gap-1 items-center border border-slate-100">
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
               </div>
             </motion.div>
           )}
@@ -269,20 +241,18 @@ export function StudentChat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Footer & Input */}
-      <div className="p-8 bg-white border-t border-slate-50">
+      <div className="p-6 bg-slate-50/50 border-t border-slate-50">
         {messages.length < 5 && !isTyping && (
-          <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          <div className="flex flex-wrap gap-2 mb-4">
             {[
-              { label: 'أعطني تلميحاً', icon: Lightbulb },
-              { label: 'اشرح الخطوة الأولى', icon: Info },
-              { label: 'أنا عالق هنا', icon: HelpCircle },
-              { label: 'مثال مشابه', icon: RefreshCcw },
+              { label: 'تلميح', icon: Lightbulb },
+              { label: 'الخطوة الأولى', icon: Info },
+              { label: 'أنا عالق', icon: HelpCircle },
             ].map((suggest, i) => (
               <button 
                 key={i}
                 onClick={() => handleSendMessage(suggest.label)}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-500 rounded-full text-xs font-black hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-500 rounded-lg text-xs font-bold hover:text-indigo-600 border border-slate-100 transition-all shadow-sm"
               >
                 <suggest.icon size={12} />
                 {suggest.label}
@@ -291,27 +261,23 @@ export function StudentChat() {
           </div>
         )}
 
-        <div className="relative group">
+        <div className="flex gap-2">
           <input 
             type="text" 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="اكتب سؤالك هنا... سأساعدك في الفهم خطوة بخطوة" 
-            className="w-full pr-6 pl-20 py-5 bg-slate-50 border-2 border-transparent rounded-[2rem] outline-none focus:bg-white focus:border-indigo-600/20 focus:ring-4 focus:ring-indigo-500/5 transition-all text-slate-700 font-bold"
+            placeholder="اكتب سؤالك هنا..." 
+            className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-indigo-600 transition-all text-sm font-medium"
             disabled={isTyping}
           />
           <button 
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isTyping}
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-indigo-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-indigo-700 disabled:opacity-40 shadow-xl shadow-indigo-100 transition-all active:scale-95"
+            className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm"
           >
-            <Send size={24} className="rotate-180" />
+            <Send size={20} className="rotate-180" />
           </button>
-        </div>
-        <div className="mt-4 flex items-center justify-center gap-2 text-slate-300 text-[10px] font-black tracking-widest uppercase">
-          <ShieldAlert size={12} />
-          <span>نظام الذكاء الاصطناعي الآمن - SafeLearn AI</span>
         </div>
       </div>
     </div>
