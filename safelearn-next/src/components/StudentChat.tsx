@@ -77,7 +77,44 @@ export function StudentChat() {
     }
   };
 
-  if (!activeClass) return null;
+  if (!activeClass) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="relative">
+          <div className="w-24 h-24 bg-indigo-500/10 rounded-[2rem] flex items-center justify-center text-indigo-400 border border-indigo-500/20 animate-float">
+            <Sparkles size={48} />
+          </div>
+          <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white shadow-lg animate-pulse">
+            <Bot size={16} />
+          </div>
+        </div>
+        
+        <div className="space-y-2">
+          <h2 className="text-3xl font-black text-white tracking-tight">مرحباً بك في المعلم الذكي</h2>
+          <p className="text-slate-500 font-medium max-w-sm mx-auto">اختر المادة التي ترغب في البدء في تعلمها الآن وسأرشدك خطوة بخطوة</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
+          {[
+            { id: 1, name: 'الرياضيات المتقدمة', icon: '📐', color: 'indigo' },
+            { id: 2, name: 'العلوم العامة', icon: '🧪', color: 'emerald' },
+            { id: 3, name: 'اللغة الإنجليزية', icon: '📚', color: 'amber' },
+            { id: 4, name: 'البرمجة والذكاء الاصطناعي', icon: '💻', color: 'purple' },
+          ].map((cls) => (
+            <button
+              key={cls.id}
+              onClick={() => setActiveClass(cls)}
+              className="p-6 bg-slate-900 border border-slate-800 rounded-3xl hover:border-indigo-500/50 hover:bg-slate-800/50 transition-all group text-right flex flex-col gap-3 shadow-xl hover:shadow-indigo-500/10"
+            >
+              <span className="text-4xl group-hover:scale-110 transition-transform w-fit">{cls.icon}</span>
+              <span className="text-lg font-black text-white">{cls.name}</span>
+              <span className="text-xs font-bold text-slate-500">ابدأ التعلم الآن ←</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-[750px] bg-slate-900/50 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-slate-800 overflow-hidden relative" dir="rtl" suppressHydrationWarning>
@@ -109,12 +146,24 @@ export function StudentChat() {
             </p>
           </div>
         </div>
-        <button 
-          onClick={() => setActiveClass(null)} 
-          className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all flex items-center justify-center border border-slate-700/50"
-        >
-          <LogOut size={22} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => {
+              const topic = prompt('ما الموضوع الذي تريد البحث عن فيديو شرح له؟');
+              if (topic) window.open(`https://www.youtube.com/results?search_query=شرح+${encodeURIComponent(topic)}`, '_blank');
+            }}
+            className="px-4 py-2 bg-red-600/20 text-red-400 rounded-xl border border-red-500/20 hover:bg-red-600/30 transition-all flex items-center gap-2 text-xs font-black"
+          >
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+            فيديو شرح
+          </button>
+          <button 
+            onClick={() => setActiveClass(null)} 
+            className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all flex items-center justify-center border border-slate-700/50"
+          >
+            <LogOut size={22} />
+          </button>
+        </div>
       </div>
       
       {/* Messages */}
@@ -220,3 +269,4 @@ export function StudentChat() {
     </div>
   );
 }
+

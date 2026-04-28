@@ -66,6 +66,17 @@ export function Sidebar({ activeTab, setActiveTab }: { activeTab: string, setAct
               </div>
               <ChevronRight size={14} className={activeTab === 'chat' ? 'rotate-180' : ''} />
             </button>
+
+            <button 
+              onClick={() => window.open('https://www.youtube.com/@moeuaeofficial', '_blank')}
+              className="w-full flex items-center justify-between p-4 rounded-2xl font-bold transition-all group text-slate-400 hover:bg-slate-900"
+            >
+              <div className="flex items-center gap-3">
+                <School size={18} className="text-slate-500 group-hover:text-red-400" />
+                <span>دروس الوزارة</span>
+              </div>
+              <ChevronRight size={14} />
+            </button>
           </nav>
         </div>
 
