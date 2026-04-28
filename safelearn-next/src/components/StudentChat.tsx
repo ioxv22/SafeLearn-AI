@@ -10,12 +10,16 @@ import { motion } from 'framer-motion';
 export function StudentChat() {
   const { currentUser } = useStore();
   const [classCode, setClassCode] = useState('');
+  const [studentName, setStudentName] = useState(currentUser?.displayName === 'طالب تجريبي' ? '' : (currentUser?.displayName || ''));
   const [activeClass, setActiveClass] = useState<any>(null);
   const [isJoining, setIsJoining] = useState(false);
   const [error, setError] = useState('');
 
   const handleJoin = async () => {
-    if (!classCode.trim()) return;
+    if (!classCode.trim() || !studentName.trim()) {
+      setError('يرجى إدخال اسمك وكود الفصل بشكل صحيح.');
+      return;
+    }
     setIsJoining(true);
     setError('');
 
@@ -51,6 +55,13 @@ export function StudentChat() {
           <div className="space-y-4">
             <input 
               type="text" 
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              placeholder="اسمك الكامل (مثال: أحمد محمد)"
+              className="w-full px-4 py-3 text-center text-lg font-bold border-2 border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-colors bg-slate-50"
+            />
+            <input 
+              type="text" 
               value={classCode}
               onChange={(e) => setClassCode(e.target.value)}
               placeholder="مثال: 123456"
@@ -60,7 +71,7 @@ export function StudentChat() {
             {error && <p className="text-red-500 text-sm font-bold">{error}</p>}
             <button 
               onClick={handleJoin}
-              disabled={isJoining || classCode.length < 6}
+              disabled={isJoining || classCode.length < 6 || !studentName.trim()}
               className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
             >
               دخول الفصل <ArrowRight size={18} />
