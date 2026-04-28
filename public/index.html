@@ -295,15 +295,40 @@
             <div id="classroomView" class="view-section hidden">
                 <header>
                     <div class="header-title">
-                        <h3>إدارة الفصول الدراسية</h3>
-                        <p>تنظيم المواد والطلاب وتوزيع المهام التعليمية</p>
+                        <h3>إدارة الفصول الذكية</h3>
+                        <p>نظّم طلابك وتابع تقدمهم في بيئة تعليمية آمنة</p>
                     </div>
+                    <button class="btn-premium" onclick="showCreateClassModal()">
+                        <i class="fa-solid fa-plus"></i> إنشاء فصل جديد
+                    </button>
                 </header>
-                <div class="empty-state">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                    <h3>الفصول الدراسية الذكية</h3>
-                    <p>هذه الميزة تتيح للمعلم ربط الطلاب ببيئة تعلم آمنة. تم إعداد ٣ فصول افتراضية مسبقاً.</p>
-                    <button class="btn-premium">عرض الفصول الافتراضية</button>
+
+                <div class="classroom-grid grid">
+                    <div class="class-card glass-panel">
+                        <div class="class-header">
+                            <div class="class-icon"><i class="fa-solid fa-atom"></i></div>
+                            <span class="badge success">نشط الآن</span>
+                        </div>
+                        <h4>فصل الفيزياء - المتقدم</h4>
+                        <p>٢٤ طالب | متوسط النزاهة: ٩٤٪</p>
+                        <div class="class-actions">
+                            <button class="btn-secondary">عرض الطلاب</button>
+                            <button class="btn-outline">الإعدادات</button>
+                        </div>
+                    </div>
+
+                    <div class="class-card glass-panel">
+                        <div class="class-header">
+                            <div class="class-icon"><i class="fa-solid fa-flask"></i></div>
+                            <span class="badge info">قيد المراجعة</span>
+                        </div>
+                        <h4>فصل الكيمياء العضوية</h4>
+                        <p>١٨ طالب | متوسط النزاهة: ٨٨٪</p>
+                        <div class="class-actions">
+                            <button class="btn-secondary">عرض الطلاب</button>
+                            <button class="btn-outline">الإعدادات</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

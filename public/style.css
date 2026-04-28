@@ -35,7 +35,7 @@
 }
 
 html {
-    font-size: 18px; /* Scaled up from default */
+    font-size: 16px;
 }
 
 body {
@@ -140,13 +140,12 @@ body {
 /* Theme Toggle */
 .theme-toggle {
     position: fixed;
-    top: 30px;
-    right: 30px;
-    left: auto;
-    z-index: 9999;
-    width: 50px;
-    height: 50px;
-    border-radius: 16px;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     color: var(--text-main);
@@ -154,8 +153,7 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .theme-toggle:hover {
@@ -349,9 +347,9 @@ body {
 
 /* Sidebar */
 .sidebar {
-    width: 320px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 2.5rem;
+    width: 260px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--glass-border);
@@ -360,21 +358,16 @@ body {
 .sidebar .logo {
     display: flex;
     align-items: center;
-    gap: 15px;
-    font-size: 2rem; /* Scaled up */
+    gap: 12px;
+    font-size: 1.4rem;
     font-weight: 900;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #fff, var(--primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;
+    color: white;
 }
 
 .sidebar .logo i {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: var(--primary);
-    -webkit-text-fill-color: initial;
-    filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 /* Behavioral System Styles */
