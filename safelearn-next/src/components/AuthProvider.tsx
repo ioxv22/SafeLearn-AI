@@ -7,7 +7,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useStore } from '../store';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { setCurrentUser, setIsLoading } = useStore();
+  const { setCurrentUser, setLoading } = useStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -41,11 +41,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setCurrentUser(null);
       }
-      setIsLoading(false);
+      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [setCurrentUser, setIsLoading]);
+  }, [setCurrentUser, setLoading]);
 
   return <>{children}</>;
 }
