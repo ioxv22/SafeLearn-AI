@@ -42,6 +42,10 @@ export function StudentChat() {
     setIsJoining(false);
   };
 
+  const handleSkip = () => {
+    setActiveClass({ id: 'personal', name: 'التعلم المستقل (شخصي)' });
+  };
+
   if (!activeClass) {
     return (
       <div className="flex flex-col items-center justify-center py-20" dir="rtl">
@@ -75,6 +79,12 @@ export function StudentChat() {
               className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
             >
               دخول الفصل <ArrowRight size={18} />
+            </button>
+            <button 
+              onClick={handleSkip}
+              className="w-full flex items-center justify-center py-2 rounded-xl font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              تخطي (تعلم مستقل بدون فصل)
             </button>
           </div>
         </motion.div>
