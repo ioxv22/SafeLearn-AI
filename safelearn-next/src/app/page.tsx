@@ -23,7 +23,7 @@ export default function Home() {
   const handleDemoLogin = (role: 'student' | 'teacher') => {
     setCurrentUser({
       uid: 'demo-' + role,
-      email: role + '@demo.com',
+      email: role === 'teacher' ? 'teacher@moe.ae' : 'student@demo.com',
       displayName: role === 'student' ? 'طالب تجريبي' : 'معلم تجريبي',
       photoURL: null,
       role: role

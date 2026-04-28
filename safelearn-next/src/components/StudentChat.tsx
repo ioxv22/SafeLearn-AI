@@ -140,110 +140,62 @@ export function StudentChat() {
   }
 
   return (
-    <div className="flex flex-col h-[600px] md:h-[700px] bg-white rounded-[2rem] shadow-2xl shadow-indigo-500/10 border border-slate-100 overflow-hidden" dir="rtl">
-      {/* Chat Header */}
-      <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200">
-              <Sparkles size={20} />
-            </div>
-            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></span>
+    <div className="flex flex-col h-[600px] bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden" dir="rtl">
+      <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+            <MessageSquare size={20} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 leading-tight">{activeClass.name}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1">
-                الوضع الآمن مفعل
-              </p>
-              <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-              <p className="text-[10px] text-slate-400 font-medium">بواسطة Gemini AI</p>
-            </div>
+            <h3 className="font-bold text-slate-800">{activeClass.name}</h3>
+            <p className="text-xs text-emerald-600 font-bold flex items-center gap-1">
+              الوضع الآمن مفعل (تلميحات فقط)
+            </p>
           </div>
         </div>
-        <button 
-          onClick={() => setActiveClass(null)} 
-          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-          title="مغادرة الفصل"
-        >
-          <LogOut size={20} />
+        <button onClick={() => setActiveClass(null)} className="text-sm text-slate-500 hover:text-slate-800 font-bold">
+          مغادرة
         </button>
       </div>
       
-      {/* Messages Area */}
-      <div className="flex-1 p-6 overflow-y-auto bg-[#FBFBFF] space-y-6 custom-scrollbar">
-        <AnimatePresence initial={false}>
-          {messages.map((msg, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'} gap-3`}
-            >
-              {msg.role === 'user' && (
-                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 shrink-0 mt-1">
-                  <User size={16} />
-                </div>
-              )}
-              
-              <div className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${
-                msg.role === 'user' 
-                  ? 'bg-white border border-slate-100 text-slate-700 rounded-tr-none' 
-                  : 'bg-indigo-600 text-white rounded-tl-none shadow-indigo-200'
-              }`}>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-              </div>
-
-              {msg.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 mt-1">
-                  <Bot size={16} />
-                </div>
-              )}
-            </motion.div>
-          ))}
-          
-          {isTyping && (
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }}
-              className="flex justify-end gap-3"
-            >
-              <div className="bg-indigo-50 p-4 rounded-2xl rounded-tl-none flex gap-1">
-                <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></span>
-                <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-              </div>
-              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
-                <Bot size={16} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-slate-50/30">
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
+            <div className={`max-w-[80%] p-3 rounded-xl shadow-sm ${
+              msg.role === 'user' ? 'bg-white border border-slate-100 text-slate-800' : 'bg-indigo-600 text-white'
+            }`}>
+              {msg.content}
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex justify-end">
+            <div className="bg-indigo-100 text-indigo-600 p-2 rounded-xl text-xs font-bold animate-pulse">
+              جاري التفكير...
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Input Area */}
-      <div className="p-6 bg-white border-t border-slate-100">
-        <div className="relative flex items-center gap-3 bg-slate-50 border border-slate-200 p-2 pl-3 rounded-2xl focus-within:ring-4 focus-within:ring-indigo-500/5 focus-within:border-indigo-500 transition-all">
+      <div className="p-4 border-t border-slate-100 bg-white">
+        <div className="flex gap-2">
           <input 
             type="text" 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="اسأل سؤالك هنا... (مثال: اشرح لي قانون نيوتن)" 
-            className="flex-1 bg-transparent border-none px-3 py-2 outline-none text-slate-700 placeholder:text-slate-400"
+            placeholder="اسأل سؤالك هنا..." 
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:border-indigo-500 transition-colors"
             disabled={isTyping}
           />
           <button 
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-100"
+            className="bg-indigo-600 text-white px-6 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
-            <Send size={18} className="rotate-180" />
+            إرسال
           </button>
         </div>
-        <p className="text-[10px] text-center text-slate-400 mt-3 font-medium">
-          المعلم الذكي يساعدك على الفهم، تذكر دائماً أنه لن يعطيك الإجابة مباشرة!
-        </p>
       </div>
     </div>
   );

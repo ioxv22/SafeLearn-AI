@@ -16,10 +16,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
-        let role: 'student' | 'teacher' = 'student'; // Default to student
+        let role: 'student' | 'teacher' = user.email?.toLowerCase().includes('moe') ? 'teacher' : 'student';
         
         if (userSnap.exists()) {
-          role = userSnap.data().role || 'student';
+          role = userSnap.data().role || role;
         } else {
           // Create new user in Firestore
           await setDoc(userRef, {
