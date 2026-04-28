@@ -4,7 +4,7 @@ import { useStore } from '../store';
 import { 
   LayoutDashboard, MessageSquare, ShieldCheck, 
   GraduationCap, LogOut, ChevronRight, BrainCircuit,
-  ToggleLeft, ToggleRight, Flame, Trophy, Sparkles
+  ToggleLeft, ToggleRight, Flame, Trophy, Sparkles, School
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -19,7 +19,7 @@ export function Sidebar({ activeTab, setActiveTab }: { activeTab: string, setAct
   };
 
   return (
-    <aside className="w-80 h-full bg-slate-950 text-slate-300 flex flex-col relative overflow-hidden border-l border-slate-900" dir="rtl">
+    <aside className="w-80 h-full bg-slate-950 text-slate-300 flex flex-col relative overflow-hidden border-l border-slate-900" dir="rtl" suppressHydrationWarning>
       {/* Dynamic Glow background */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none"></div>
 
