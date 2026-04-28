@@ -1202,6 +1202,76 @@ header {
 .code-display p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 .code-display h2 { font-size: 3rem; letter-spacing: 5px; color: var(--secondary); margin: 0; }
 
+/* AI Thinking Indicator */
+.thinking-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.thinking-dots .dots {
+    display: flex;
+    gap: 4px;
+}
+.thinking-dots .dots span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    animation: dotPulse 1.4s infinite ease-in-out;
+}
+.thinking-dots .dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+    0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+    40% { opacity: 1; transform: translateY(-4px); }
+}
+
+/* Hint Control Area */
+.hint-control-area {
+    padding: 1rem 2rem;
+    background: rgba(99, 102, 241, 0.05);
+    border-top: 1px solid var(--glass-border);
+    flex-shrink: 0;
+}
+.enforcement-area {
+    max-width: 900px;
+    margin: 0 auto;
+}
+.hint-note {
+    font-size: 0.85rem;
+    color: var(--warning);
+    margin-bottom: 8px;
+}
+#attemptInput {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: none;
+    outline: none;
+    margin-bottom: 10px;
+}
+#attemptInput:focus {
+    border-color: var(--primary);
+}
+.flex-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+}
+.timer-display {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--warning);
+    font-family: monospace;
+    min-width: 50px;
+    text-align: center;
+}
+
 .qr-mock {
     display: flex;
     flex-direction: column;
