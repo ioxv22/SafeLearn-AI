@@ -12,6 +12,22 @@ let behaviorScoreValue = 94;
 let independenceScoreValue = 88;
 let solveHistory = [];
 
+let voiceEnabled = false;
+function toggleVoiceMode() {
+    voiceEnabled = !voiceEnabled;
+    showToast(voiceEnabled ? 'تم تفعيل وضع المعلم الصوتي 🎙️' : 'تم إيقاف وضع المعلم الصوتي', 'info');
+    const btn = document.getElementById('voiceTutorBtn');
+    if (btn) btn.classList.toggle('active', voiceEnabled);
+}
+
+function speakText(text) {
+    if (!voiceEnabled) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+}
+
 const selfAwarePhrases = [
     "هدفي أن تتعلم كيف تفكر، وليس فقط أن تحصل على النتيجة.",
     "تذكر: كل محاولة تقوم بها هي خطوة نحو بناء 'عضلة التفكير'.",
@@ -274,7 +290,15 @@ function showMicroReflection() {
     setTimeout(() => {
         appendMessage("🎉 مذهل! لقد أكملت التحدي بنجاح. ما هو أكثر جزء شعرت فيه بالفخر بنفسك أثناء التفكير؟", false);
         updateBehaviorScore(5);
-        showSessionSummary();
+        
+        // Final Growth Summary Trigger
+        setTimeout(() => {
+            const finalScoreEl = document.getElementById('finalIndependence');
+            if (finalScoreEl) finalScoreEl.innerText = independenceScoreValue + "%";
+            const modal = document.getElementById('growthModal');
+            if (modal) modal.classList.remove('hidden');
+            showToast('تم تحليل أدائك: نمو ممتاز في التفكير المستقل!', 'success');
+        }, 3000);
     }, 2000);
 }
 
