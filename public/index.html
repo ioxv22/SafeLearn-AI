@@ -81,7 +81,7 @@
     </div>
 
     <!-- App Page -->
-    <div id="appPage" class="container glass-panel hidden">
+    <div id="appPage" class="container hidden">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
@@ -89,44 +89,29 @@
                 <h2>SafeLearn AI</h2>
             </div>
             
-            <div class="behavior-score glass-panel">
-                <span>سلوك التعلم (Behavior Score)</span>
-                <strong id="behaviorScore">92%</strong>
-                <div class="progress-bar"><div class="progress-fill" style="width: 92%; background: var(--success)"></div></div>
-                <div class="level-badge" id="thinkerLevel">Independent Solver</div>
-            </div>
-
-            <div class="sidebar-stats glass-panel">
-                <div class="stat-mini">
-                    <span>مستوى الاستقلالية (Independence)</span>
-                    <strong id="independenceScore">88%</strong>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 88%"></div></div>
-                </div>
-            </div>
-
             <nav class="menu">
                 <a href="#" id="menuTeacherAI" class="active"><i class="fa-solid fa-robot"></i> المعلم الذكي</a>
                 <a href="#" id="menuClassroom"><i class="fa-solid fa-graduation-cap"></i> فصلي الدراسي</a>
                 <a href="#" id="menuReports"><i class="fa-solid fa-chart-line"></i> تقارير النظام</a>
-                <a href="#" id="menuTeacherControl" class="teacher-only hidden"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم المعلم</a>
+                <div id="menuTeacherControl" class="hidden">
+                    <a href="#" class="admin-link"><i class="fa-solid fa-gears"></i> تحليلات المعلم</a>
+                </div>
             </nav>
 
             <div class="sidebar-history">
                 <p class="history-title">سجل المحادثات</p>
                 <div class="history-items">
-                    <div class="history-item active"><span>قوانين نيوتن</span><i class="fa-solid fa-message"></i></div>
-                    <div class="history-item"><span>التفاضل والتكامل</span><i class="fa-solid fa-message"></i></div>
-                    <div class="history-item"><span>تفاعل الأكسدة</span><i class="fa-solid fa-message"></i></div>
+                    <div class="history-item active"><span>قوانين الحركة</span><i class="fa-solid fa-chevron-left"></i></div>
+                    <div class="history-item"><span>التفاضل والتكامل</span><i class="fa-solid fa-chevron-left"></i></div>
+                    <div class="history-item"><span>تفاعل الأكسدة</span><i class="fa-solid fa-chevron-left"></i></div>
                 </div>
             </div>
-            
-            <div class="sidebar-footer">
-                <div class="mode-badge pulse-anim">
-                    <i class="fa-solid fa-shield-check"></i> 
-                    <div>
-                        <strong>Safe Mode: ON</strong>
-                        <span>التعلم الأخلاقي نشط</span>
-                    </div>
+
+            <div class="mode-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <strong>Safe Mode: ON</strong>
+                    <span>التعلم الأخلاقي نشط</span>
                 </div>
             </div>
 
@@ -135,7 +120,7 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
+        <!-- Main Content -->
         <main class="main-content">
             <!-- Student Chat View -->
             <div id="studentChatView" class="view-section">
@@ -145,16 +130,16 @@
                         <p>المعلم الذكي سيرشدك للحل خطوة بخطوة</p>
                     </div>
                     <div class="header-actions">
-                        <button id="generateVideoBtn" class="btn-premium" title="شرح مرئي ذكي">
-                            <i class="fa-solid fa-play"></i>
-                            <span>المكتبة المرئية</span>
+                        <button class="btn-premium" onclick="isChallengeMode = !isChallengeMode; showToast(isChallengeMode ? 'وضع التحدي نشط!' : 'تم العودة للوضع العادي')">
+                            <i class="fa-solid fa-trophy"></i>
+                            <span>وضع التحدي</span>
                         </button>
                         <div class="user-profile">
                             <div class="user-text">
-                                <span id="displayUserName" class="user-name">الطالب التجريبي</span>
-                                <span id="displayUserLevel" class="user-level">المستوى الدراسي: جيد جداً 🌟</span>
+                                <span class="user-name" id="displayUserName">الطالب التجريبي</span>
+                                <span class="user-level">المستوى: جيد جداً 🌟</span>
                             </div>
-                            <img id="displayUserAvatar" src="https://ui-avatars.com/api/?name=St&background=6366f1&color=fff" alt="User Avatar">
+                            <img src="https://ui-avatars.com/api/?name=ST&background=6366f1&color=fff" id="displayUserAvatar">
                         </div>
                     </div>
                 </header>
@@ -170,29 +155,7 @@
                     </div>
                 </div>
 
-                <div id="hintRevealControl" class="hint-control-area hidden">
-                    <div class="enforcement-area">
-                        <p class="hint-note">✍️ اكتب محاولتك أولاً ليتم تفعيل التلميح التالي:</p>
-                        <textarea id="attemptInput" placeholder="اكتب طريقتك في التفكير هنا..." rows="2"></textarea>
-                        <div class="flex-center">
-                            <div class="timer-display" id="hintTimer">00:10</div>
-                            <button id="nextHintBtn" class="btn-premium" onclick="validateAndRevealHint()" disabled>
-                                <i class="fa-solid fa-lightbulb"></i>
-                                <span>تفعيل التلميح التالي</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="input-area">
-                    <div class="input-actions">
-                        <button class="btn-icon" id="voiceTutorBtn" onclick="toggleVoiceTutor()" title="الشرح الصوتي">
-                            <i class="fa-solid fa-microphone-lines"></i>
-                        </button>
-                        <button class="btn-icon" id="challengeModeBtn" onclick="toggleChallengeMode()" title="وضع التحدي">
-                            <i class="fa-solid fa-fire"></i>
-                        </button>
-                    </div>
                     <div class="input-wrapper">
                         <textarea id="userInput" placeholder="صف لي المشكلة التي تواجهها أو اسأل عن مفهوم معين..." rows="1" onkeypress="handleKeyPress(event)" oninput="autoResizeInput()"></textarea>
                         <button onclick="sendMessage()" class="send-btn">

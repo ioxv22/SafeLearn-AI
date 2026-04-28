@@ -35,7 +35,7 @@
 }
 
 html {
-    font-size: 15px; /* Scaled down for better visibility on all screens */
+    font-size: 14px; /* Scaled down for maximum compatibility */
 }
 
 body {
@@ -374,28 +374,40 @@ body {
 
 .login-links a:hover { text-decoration: underline; }
 
-/* App Layout (Full Screen) */
+/* App Layout (Responsive) */
 .container {
     width: 100vw;
     height: 100vh;
     display: flex;
     overflow: hidden;
     position: relative;
-    border-radius: 0; /* Full screen feel */
-    z-index: 10;
+    background: var(--bg-dark);
 }
 
-.hidden { display: none !important; }
-
-/* Sidebar */
 .sidebar {
-    width: 320px;
+    width: 280px;
+    min-width: 280px;
     background: rgba(0, 0, 0, 0.4);
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     border-left: 1px solid rgba(255, 255, 255, 0.05);
     height: 100vh;
+    overflow-y: auto;
+}
+
+.main-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-section {
+    width: 100%;
+    padding-bottom: 5rem; /* Space for floating input */
 }
 
 .sidebar .logo {
@@ -810,7 +822,7 @@ header {
 /* Dashboard Styles */
 .dashboard-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     padding: 2.5rem;
 }
