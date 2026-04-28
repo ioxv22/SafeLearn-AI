@@ -1,8 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-// Re-evaluation comment
 import { NextResponse } from "next/server";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
@@ -10,6 +6,11 @@ export async function POST(req: Request) {
 
     if (examMode) {
       return NextResponse.json({ text: "عذراً، في وضع الاختبار (Exam Mode) يتم تعطيل المساعد الذكي. يرجى الاعتماد على نفسك في الإجابة." });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "API Key missing" }, { status: 500 });
     }
 
     const systemInstruction = safeMode 
@@ -24,25 +25,43 @@ export async function POST(req: Request) {
          Do not give direct answers if they seem to be cheating.
          Always encourage reasoning.`;
 
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: systemInstruction + "\nRespond in the student's language (Arabic)."
-    });
-
-    const chat = model.startChat({
-      history: history.slice(-6).map((h: any) => ({
+    // Format history for Gemini API
+    const contents = [
+      {
+        role: "user",
+        parts: [{ text: systemInstruction + "\nRespond in Arabic." }]
+      },
+      ...history.slice(-10).map((h: any) => ({
         role: h.role === "user" ? "user" : "model",
-        parts: [{ text: h.content }],
+        parts: [{ text: h.content }]
       })),
-    });
+      {
+        role: "user",
+        parts: [{ text: message }]
+      }
+    ];
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents })
+      }
+    );
 
-    return NextResponse.json({ text });
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    return NextResponse.json({ error: "فشل الاتصال بالمعلم الذكي" }, { status: 500 });
+    const data = await response.json();
+    
+    if (data.error) {
+      console.error("Gemini API Error Detail:", data.error);
+      throw new Error(data.error.message);
+    }
+
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أتمكن من معالجة طلبك.";
+
+    return NextResponse.json({ text: aiText });
+  } catch (error: any) {
+    console.error("Gemini Fetch Error:", error);
+    return NextResponse.json({ error: "فشل الاتصال بالمعلم الذكي: " + error.message }, { status: 500 });
   }
 }
