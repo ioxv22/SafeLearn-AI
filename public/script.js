@@ -187,13 +187,33 @@ function finalizeRegister() {
 }
 
 function simulateGoogleLogin() {
-    showToast('جاري الاتصال بحساب جوجل...', 'info');
+    const btn = document.querySelector('.btn-google');
+    const originalContent = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الاتصال بخدمة Google...';
+    btn.disabled = true;
+    
+    // Create a fake "Google Popup" effect
+    showToast('جاري التحقق من الهوية عبر Google API...', 'info');
+    
     setTimeout(() => {
-        currentUser = { role: 'student', name: 'مستخدم جوجل' };
-        loginPage.classList.add('hidden');
-        appPage.classList.remove('hidden');
-        showToast('تم الدخول بواسطة جوجل بنجاح', 'success');
-    }, 1500);
+        showToast('تمت المصادقة بنجاح! مرحباً بك.', 'success');
+        
+        // Final transition
+        setTimeout(() => {
+            currentUser = { role: 'student', name: 'مستخدم Google' };
+            
+            // Update UI with Google profile info (mock)
+            document.getElementById('displayUserName').innerText = 'طالب Google';
+            document.getElementById('displayUserAvatar').src = 'https://ui-avatars.com/api/?name=G&background=ea4335&color=fff';
+            
+            loginPage.classList.add('hidden');
+            appPage.classList.remove('hidden');
+            
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+        }, 800);
+    }, 1800);
 }
 
 // Teacher Class Creation
