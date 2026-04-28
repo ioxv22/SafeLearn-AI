@@ -8,6 +8,7 @@ import { BrainCircuit, GraduationCap, School, LogOut, Sparkles, LayoutDashboard,
 import { motion } from 'framer-motion';
 import { TeacherDashboard } from '@/components/TeacherDashboard';
 import { StudentChat } from '@/components/StudentChat';
+import { StudentDashboard } from '@/components/StudentDashboard';
 import { Sidebar } from '@/components/Sidebar';
 
 export default function Home() {
@@ -122,7 +123,9 @@ export default function Home() {
         {/* Content Area */}
         <div className="flex-1 p-10 overflow-y-auto">
           <div className="max-w-5xl mx-auto h-full">
-            {activeTab === 'dashboard' ? <TeacherDashboard /> : <StudentChat />}
+            {activeTab === 'dashboard' ? (
+              currentUser.role === 'teacher' ? <TeacherDashboard /> : <StudentDashboard />
+            ) : <StudentChat />}
           </div>
         </div>
 

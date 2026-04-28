@@ -65,7 +65,7 @@ export function Sidebar({ activeTab, setActiveTab }: { activeTab: string, setAct
         >
           <div className="flex items-center gap-3">
             <LayoutDashboard size={18} />
-            <span>لوحة التحكم</span>
+            <span>{currentUser?.role === 'teacher' ? 'لوحة التحكم' : 'إحصائياتي'}</span>
           </div>
           <ChevronRight size={16} className={activeTab === 'dashboard' ? 'rotate-180' : ''} />
         </button>
