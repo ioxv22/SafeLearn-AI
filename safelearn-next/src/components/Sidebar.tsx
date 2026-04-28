@@ -73,7 +73,7 @@ export function Sidebar({ activeTab, setActiveTab }: { activeTab: string, setAct
             >
               <div className="flex items-center gap-3">
                 <School size={18} className="text-slate-500 group-hover:text-red-400" />
-                <span>دروس الوزارة</span>
+                <span>يوتيوب الوزارة</span>
               </div>
               <ChevronRight size={14} />
             </button>
