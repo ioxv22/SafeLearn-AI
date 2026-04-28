@@ -46,8 +46,8 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50" suppressHydrationWarning>
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500 border-t-transparent"></div>
+        <div className="relative" suppressHydrationWarning>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500 border-t-transparent" suppressHydrationWarning></div>
           <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-500" size={24} />
         </div>
       </div>
@@ -104,33 +104,38 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden" suppressHydrationWarning>
+    <div className="flex h-screen bg-slate-950 text-slate-200 overflow-hidden" suppressHydrationWarning>
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <main className="flex-1 flex flex-col overflow-hidden relative">
+      <main className="flex-1 flex flex-col overflow-hidden relative" suppressHydrationWarning>
         {/* Top Header for Content Area */}
-        <header className="h-20 border-b border-slate-100 bg-white/50 backdrop-blur-sm flex items-center px-10 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
-              {activeTab === 'dashboard' ? <LayoutDashboard size={20} /> : <MessageCircle size={20} />}
+        <header className="h-20 border-b border-slate-900 bg-slate-950/50 backdrop-blur-md flex items-center px-10 shrink-0 relative z-20">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-indigo-400 border border-slate-800 shadow-inner">
+              {activeTab === 'dashboard' ? <LayoutDashboard size={24} /> : <MessageCircle size={24} />}
             </div>
-            <h2 className="text-xl font-bold text-slate-800">
-              {activeTab === 'dashboard' ? 'لوحة المراقبة والأداء' : 'المعلم الذكي - Safe AI'}
-            </h2>
+            <div>
+              <h2 className="text-xl font-black text-white tracking-tight">
+                {activeTab === 'dashboard' ? 'لوحة المراقبة والأداء' : 'المعلم الذكي - Safe AI'}
+              </h2>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">SafeLearn Platform v2.0</p>
+            </div>
           </div>
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 p-10 overflow-y-auto">
-          <div className="max-w-5xl mx-auto h-full">
+        <div className="flex-1 p-10 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="max-w-6xl mx-auto h-full">
             {activeTab === 'dashboard' ? (
               currentUser.role === 'teacher' ? <TeacherDashboard /> : <StudentDashboard />
             ) : <StudentChat />}
           </div>
         </div>
 
-        {/* Background Decorative Blur */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        {/* Background Decorative Blurs - Winning Effects */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] pointer-events-none"></div>
       </main>
     </div>
   );
