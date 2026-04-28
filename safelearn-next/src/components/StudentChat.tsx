@@ -180,44 +180,47 @@ export function StudentChat() {
   }
 
   return (
-    <div className="flex flex-col h-[600px] bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden" dir="rtl" suppressHydrationWarning>
-      <div className="px-6 py-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm">
-            <Bot size={24} />
+    <div className="flex flex-col h-[700px] bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden" dir="rtl" suppressHydrationWarning>
+      {/* Header */}
+      <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-white">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+            <Bot size={28} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-800 leading-none mb-1">{activeClass.name}</h3>
-            <p className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
-              <Sparkles size={10} /> الوضع الآمن نشط
-            </p>
+            <h3 className="text-xl font-bold text-slate-800">{activeClass.name}</h3>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span className="text-xs font-bold text-emerald-600">الوضع الآمن نشط</span>
+            </div>
           </div>
         </div>
         <button 
           onClick={() => setActiveClass(null)} 
           className="p-2 text-slate-300 hover:text-red-500 transition-colors"
         >
-          <LogOut size={20} />
+          <LogOut size={24} />
         </button>
       </div>
       
-      <div className="flex-1 px-6 py-6 overflow-y-auto bg-white space-y-6 custom-scrollbar">
+      {/* Messages */}
+      <div className="flex-1 px-8 py-8 overflow-y-auto bg-slate-50/30 space-y-6 custom-scrollbar">
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}
             >
-              <div className={`max-w-[80%] p-4 rounded-2xl shadow-sm ${
+              <div className={`max-w-[85%] p-5 rounded-[2rem] shadow-sm ${
                 msg.role === 'user' 
-                  ? 'bg-indigo-600 text-white rounded-br-none' 
-                  : 'bg-slate-50 text-slate-800 rounded-bl-none border border-slate-100'
+                  ? 'bg-white text-slate-800 rounded-br-none border border-slate-100' 
+                  : 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-bl-none shadow-indigo-200'
               }`}>
-                <p className="text-sm leading-relaxed">{msg.content}</p>
-                <div className={`mt-2 text-[8px] opacity-50 flex items-center gap-1 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <Clock size={8} />
+                <p className="text-base leading-relaxed font-medium">{msg.content}</p>
+                <div className={`mt-3 text-[10px] font-bold opacity-60 flex items-center gap-1 ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
+                  <Clock size={10} />
                   {msg.timestamp}
                 </div>
               </div>
@@ -228,12 +231,12 @@ export function StudentChat() {
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }}
-              className="flex justify-start"
+              className="flex justify-end"
             >
-              <div className="bg-slate-50 px-4 py-3 rounded-2xl rounded-bl-none flex gap-1 items-center border border-slate-100">
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 px-6 py-4 rounded-[1.5rem] rounded-bl-none flex gap-1.5 items-center shadow-lg shadow-indigo-100">
+                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-white rounded-full" />
+                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-white rounded-full" />
+                <motion.div animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-white rounded-full" />
               </div>
             </motion.div>
           )}
@@ -241,42 +244,43 @@ export function StudentChat() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-6 bg-slate-50/50 border-t border-slate-50">
-        {messages.length < 5 && !isTyping && (
-          <div className="flex flex-wrap gap-2 mb-4">
+      {/* Footer */}
+      <div className="p-8 bg-white border-t border-slate-50">
+        {messages.length < 6 && !isTyping && (
+          <div className="flex flex-wrap gap-2 mb-6 justify-center">
             {[
-              { label: 'تلميح', icon: Lightbulb },
-              { label: 'الخطوة الأولى', icon: Info },
-              { label: 'أنا عالق', icon: HelpCircle },
+              { label: 'أعطني تلميحاً', icon: Lightbulb },
+              { label: 'اشرح الخطوة الأولى', icon: Info },
+              { label: 'أنا عالق هنا', icon: HelpCircle },
             ].map((suggest, i) => (
               <button 
                 key={i}
                 onClick={() => handleSendMessage(suggest.label)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-500 rounded-lg text-xs font-bold hover:text-indigo-600 border border-slate-100 transition-all shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-500 rounded-full text-xs font-bold hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-all shadow-sm"
               >
-                <suggest.icon size={12} />
+                <suggest.icon size={14} />
                 {suggest.label}
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <input 
             type="text" 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="اكتب سؤالك هنا..." 
-            className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-indigo-600 transition-all text-sm font-medium"
+            placeholder="اكتب سؤالك هنا... سأساعدك خطوة بخطوة" 
+            className="flex-1 px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:bg-white focus:border-indigo-600/20 transition-all text-base font-bold text-slate-700"
             disabled={isTyping}
           />
           <button 
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm"
+            className="bg-indigo-600 text-white px-6 rounded-2xl hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center"
           >
-            <Send size={20} className="rotate-180" />
+            <Send size={24} className="rotate-180" />
           </button>
         </div>
       </div>
