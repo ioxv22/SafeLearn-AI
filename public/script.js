@@ -16,14 +16,10 @@ const selfAwarePhrases = [
     "هدفي أن تتعلم كيف تفكر، وليس فقط أن تحصل على النتيجة.",
     "تذكر: كل محاولة تقوم بها هي خطوة نحو بناء 'عضلة التفكير'.",
     "أنا هنا لأرشدك، الحل الحقيقي يكمن في عقلك أنت.",
-    "الذكاء ليس في معرفة الإجابة، بل في فهم الرحلة إليها."
-];
-
-const selfAwarePhrases = [
+    "الذكاء ليس في معرفة الإجابة، بل في فهم الرحلة إليها.",
     "أنا هنا لأبني مهارتك في التفكير، وليس لأعطيك الحل الجاهز.",
     "تذكر أن الخطأ هو جزء من التعلم، حاول وسأقوم بتوجيهك.",
-    "هدفي هو أن تصبح مفكراً مستقلاً، لذا سأعطيك طرف الخيط فقط.",
-    "الذكاء ليس في الوصول للحل، بل في فهم كيفية الوصول إليه."
+    "هدفي هو أن تصبح مفكراً مستقلاً، لذا سأعطيك طرف الخيط فقط."
 ];
 
 // Elements
@@ -83,30 +79,50 @@ function showToast(message, type = 'info') {
 }
 
 // Login Flow
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('emailInput').value;
-    const btn = loginForm.querySelector('.btn-glow');
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق من البروتوكولات...';
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById('emailInput');
+        const email = emailInput ? emailInput.value : '';
+        const btn = loginForm.querySelector('.btn-glow');
+        
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
+        
+        setTimeout(() => {
+            if (email.includes('admin') || email.includes('teacher')) {
+                currentUser = { role: 'teacher', name: 'رئيس لجنة التحكيم' };
+                if (menuTeacherControl) menuTeacherControl.classList.remove('hidden');
+                showView('teacherDashboardView');
+                showToast('مرحباً بك حضرة المحكم. نظام الرقابة والتحكم نشط بالكامل.', 'success');
+            } else {
+                currentUser = { role: 'student', name: 'الطالب التجريبي' };
+                if (menuTeacherControl) menuTeacherControl.classList.add('hidden');
+                showView('studentChatView');
+                showToast('تم الدخول بنجاح. تذكر: العلم يبنى بالفهم وليس بالنقل.', 'info');
+            }
+            
+            if (loginPage) loginPage.classList.add('hidden');
+            if (appPage) appPage.classList.remove('hidden');
+            if (btn) btn.innerHTML = '<span>تسجيل الدخول للمنصة</span><i class="fa-solid fa-arrow-left"></i>';
+        }, 1500);
+    });
+}
+
+function simulateGoogleLogin() {
+    const btn = document.querySelector('.btn-google');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الاتصال بخوادم Google...';
     
     setTimeout(() => {
-        if (email.includes('admin') || email.includes('teacher')) {
-            currentUser = { role: 'teacher', name: 'رئيس لجنة التحكيم' };
-            menuTeacherControl.classList.remove('hidden');
-            showView('teacherDashboardView');
-            showToast('مرحباً بك حضرة المحكم. نظام الرقابة والتحكم نشط بالكامل.', 'success');
-        } else {
-            currentUser = { role: 'student', name: 'الطالب التجريبي' };
-            menuTeacherControl.classList.add('hidden');
-            showView('studentChatView');
-            showToast('تم الدخول بنجاح. تذكر: العلم يبنى بالفهم وليس بالنقل.', 'info');
-        }
-        
-        loginPage.classList.add('hidden');
-        appPage.classList.remove('hidden');
-        btn.innerHTML = '<span>تسجيل الدخول للمنصة</span><i class="fa-solid fa-arrow-left"></i>';
-    }, 1200);
-});
+        currentUser = { role: 'student', name: 'مستخدم Google' };
+        if (menuTeacherControl) menuTeacherControl.classList.add('hidden');
+        showView('studentChatView');
+        if (loginPage) loginPage.classList.add('hidden');
+        if (appPage) appPage.classList.remove('hidden');
+        showToast('تم تسجيل الدخول بواسطة Google بنجاح.', 'success');
+        btn.innerHTML = originalText;
+    }, 1500);
+}
 
 function showView(viewId) {
     document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
