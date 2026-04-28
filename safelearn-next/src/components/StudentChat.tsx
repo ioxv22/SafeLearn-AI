@@ -123,78 +123,73 @@ export function StudentChat() {
       <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Header */}
-      <div className="px-8 py-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/40 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/20">
-              <Bot size={30} />
+      <div className="px-8 py-6 border-b border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900/40 backdrop-blur-md sticky top-0 z-20">
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <div className="relative shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/20">
+              <Bot size={24} />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-4 border-slate-900 rounded-full"></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></div>
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-xl font-black text-white tracking-tight">{activeClass.name}</h3>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-0.5">
+              <h3 className="text-lg font-black text-white tracking-tight truncate">{activeClass.name}</h3>
               {safeMode && (
-                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-full border border-emerald-500/20 flex items-center gap-1 shadow-sm shadow-emerald-500/10">
-                  <ShieldCheck size={10} /> SAFE MODE
+                <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] font-black rounded-full border border-emerald-500/20 flex items-center gap-1">
+                  <ShieldCheck size={8} /> SAFE MODE
                 </span>
               )}
             </div>
-            <p className="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+            <p className="text-[10px] font-bold text-slate-500 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
               المعلم الذكي متصل الآن
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
           <button 
             onClick={() => {
               const topic = prompt('ما الموضوع الذي تريد البحث عن فيديو شرح له؟');
               if (topic) window.open(`https://www.youtube.com/results?search_query=شرح+${encodeURIComponent(topic)}`, '_blank');
             }}
-            className="px-4 py-2 bg-red-600/20 text-red-400 rounded-xl border border-red-500/20 hover:bg-red-600/30 transition-all flex items-center gap-2 text-xs font-black"
+            className="px-3 py-2 bg-red-600/10 text-red-400 rounded-xl border border-red-500/10 hover:bg-red-600/20 transition-all flex items-center gap-2 text-[10px] font-black"
           >
-            <div className="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping"></div>
             فيديو شرح
           </button>
           <button 
             onClick={() => setActiveClass(null)} 
-            className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all flex items-center justify-center border border-slate-700/50"
+            className="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all flex items-center justify-center border border-slate-700/50"
           >
-            <LogOut size={22} />
+            <LogOut size={18} />
           </button>
         </div>
       </div>
       
       {/* Messages */}
-      <div className="flex-1 px-8 py-10 overflow-y-auto space-y-10 custom-scrollbar relative z-10">
+      <div className="flex-1 px-6 py-8 overflow-y-auto space-y-8 custom-scrollbar relative z-10">
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              initial={{ opacity: 0, y: 15, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              transition={{ duration: 0.3 }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`relative flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row' : 'flex-row-reverse'}`}>
-                <div className={`flex flex-col gap-2 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`p-6 rounded-[2rem] shadow-2xl leading-relaxed text-sm font-medium ${
+              <div className={`relative flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row' : 'flex-row-reverse'}`}>
+                <div className={`flex flex-col gap-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`px-5 py-4 rounded-[1.8rem] shadow-xl leading-relaxed text-sm font-medium ${
                     msg.role === 'user' 
-                      ? 'bg-indigo-600 text-white rounded-tr-none shadow-indigo-500/20' 
-                      : 'bg-slate-800/80 backdrop-blur-md border border-slate-700 text-slate-200 rounded-tl-none shadow-black/20'
+                      ? 'bg-indigo-600 text-white rounded-tr-none' 
+                      : 'bg-slate-800/90 backdrop-blur-md border border-slate-700/50 text-slate-200 rounded-tl-none'
                   }`}>
                     {msg.content}
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                    <Clock size={10} />
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-slate-600">
+                    <Clock size={8} />
                     {msg.timestamp}
                   </div>
-                </div>
-                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
-                  msg.role === 'user' ? 'bg-slate-800 text-slate-400' : 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/20'
-                }`}>
-                  {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                 </div>
               </div>
             </motion.div>
@@ -204,15 +199,12 @@ export function StudentChat() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }}
-              className="flex justify-start items-center gap-4"
+              className="flex justify-start items-center gap-3"
             >
-               <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700 px-6 py-4 rounded-[1.5rem] rounded-tl-none flex gap-1.5 items-center shadow-2xl shadow-black/20">
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-indigo-500 rounded-full" />
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 bg-indigo-500 rounded-full" />
-                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 bg-indigo-500 rounded-full" />
-              </div>
-              <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 border border-indigo-500/20">
-                <Bot size={20} />
+               <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700/50 px-5 py-3 rounded-[1.2rem] rounded-tl-none flex gap-1 items-center shadow-lg">
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
+                <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
               </div>
             </motion.div>
           )}
