@@ -7,7 +7,7 @@ import { useStore } from '../store';
 import { 
   KeyRound, ArrowRight, MessageSquare, Send, 
   Sparkles, User, Bot, LogOut, ChevronLeft, 
-  Clock, Info, Lightbulb, HelpCircle, RefreshCcw
+  Clock, Info, Lightbulb, HelpCircle, RefreshCcw, ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -180,7 +180,7 @@ export function StudentChat() {
   }
 
   return (
-    <div className="flex flex-col h-[750px] bg-white rounded-[3rem] shadow-2xl shadow-indigo-500/5 border border-slate-100 overflow-hidden" dir="rtl">
+    <div className="flex flex-col h-[750px] bg-white rounded-[3rem] shadow-2xl shadow-indigo-500/5 border border-slate-100 overflow-hidden" dir="rtl" suppressHydrationWarning>
       {/* Header */}
       <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center gap-5">

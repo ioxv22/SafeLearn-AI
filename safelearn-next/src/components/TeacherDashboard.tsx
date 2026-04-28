@@ -64,7 +64,7 @@ export function TeacherDashboard() {
   };
 
   return (
-    <div className="space-y-8" dir="rtl">
+    <div className="space-y-8" dir="rtl" suppressHydrationWarning>
       <AnimatePresence mode="wait">
         {!selectedClass ? (
           <motion.div
