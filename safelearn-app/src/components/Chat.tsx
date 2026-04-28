@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../store';
 import { generateAIResponse } from '../lib/ai';
-import { Send, Bot, User, Loader2, Mic, AlertOctagon, Image as ImageIcon, BookOpen, FileText } from 'lucide-react';
+import { Send, Bot, User, Loader2, Mic, AlertOctagon, Image as ImageIcon, BookOpen, FileText, Video, Sparkles } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SUBJECTS = ['رياضيات', 'علوم', 'لغة عربية', 'تربية إسلامية', 'عام'];
 
 export const Chat = () => {
-  const { messages, addMessage, examMode, cheatAttempts, currentSubject, setCurrentSubject, currentUser } = useStore();
+  const { messages, addMessage, examMode, cheatAttempts, currentSubject, setCurrentSubject, currentUser, setVideoModalOpen } = useStore();
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -137,16 +137,29 @@ export const Chat = () => {
             </button>
           ))}
         </div>
-        {currentUser?.role === 'student' && (
-          <button 
-            onClick={handleGenerateExam}
-            disabled={isTyping}
-            className="flex items-center gap-2 bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500 hover:text-white px-4 py-1.5 rounded-full text-sm font-bold transition-all border border-indigo-500/30 whitespace-nowrap"
-          >
-            <FileText size={16} />
-            <span className="hidden sm:inline">توليد امتحان</span>
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {currentUser?.role === 'student' && (
+            <>
+              <button 
+                onClick={() => setVideoModalOpen(true)}
+                className="flex items-center gap-2 bg-gradient-to-tr from-violet-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-indigo-500/30 px-4 py-1.5 rounded-full text-sm font-bold transition-all border border-indigo-500/30 whitespace-nowrap group"
+              >
+                <Video size={16} className="group-hover:rotate-12 transition-transform" />
+                <span className="hidden sm:inline">فيديو شرح ذكي</span>
+                <Sparkles size={12} className="animate-pulse text-indigo-200" />
+              </button>
+
+              <button 
+                onClick={handleGenerateExam}
+                disabled={isTyping}
+                className="flex items-center gap-2 bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500 hover:text-white px-4 py-1.5 rounded-full text-sm font-bold transition-all border border-indigo-500/30 whitespace-nowrap"
+              >
+                <FileText size={16} />
+                <span className="hidden sm:inline">توليد امتحان</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {examMode && (

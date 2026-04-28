@@ -156,10 +156,14 @@ export function StudentChat() {
               const topic = prompt('ما الموضوع الذي تريد البحث عن فيديو شرح له؟');
               if (topic) window.open(`https://www.youtube.com/results?search_query=شرح+${encodeURIComponent(topic)}`, '_blank');
             }}
-            className="px-5 py-3 bg-red-600/10 text-red-400 rounded-2xl border border-red-500/20 hover:bg-red-600/20 transition-all flex items-center gap-3 text-xs font-black group"
+            className="px-6 py-3 bg-gradient-to-tr from-violet-600 to-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-500/30 hover:scale-105 hover:shadow-indigo-500/50 transition-all flex items-center gap-3 text-xs font-black group relative overflow-hidden"
           >
-            <Video size={18} className="group-hover:scale-110 transition-transform" />
-            فيديو شرح
+            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative flex items-center gap-2">
+              <Video size={18} className="group-hover:rotate-12 transition-transform" />
+              <span>فيديو شرح ذكي</span>
+              <Sparkles size={12} className="animate-pulse text-indigo-200" />
+            </div>
           </button>
           <button 
             onClick={() => setActiveClass(null)} 
