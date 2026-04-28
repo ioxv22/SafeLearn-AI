@@ -30,6 +30,15 @@ export default function Home() {
     });
   };
 
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      console.error(e);
+    }
+    setCurrentUser(null);
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -107,7 +116,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <button onClick={() => auth.signOut()} className="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 transition-colors">
+          <button onClick={handleLogout} className="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 transition-colors">
             تسجيل الخروج
           </button>
         </div>
