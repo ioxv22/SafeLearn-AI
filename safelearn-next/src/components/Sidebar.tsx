@@ -20,134 +20,108 @@ export function Sidebar({ activeTab, setActiveTab }: { activeTab: string, setAct
   };
 
   return (
-    <aside className="w-80 h-full bg-white border-l border-slate-100 flex flex-col p-6 overflow-y-auto" dir="rtl">
-      {/* Brand */}
-      <div className="flex items-center gap-3 mb-10 px-2">
-        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
-          <BrainCircuit size={24} />
-        </div>
-        <h1 className="text-xl font-black text-slate-800 tracking-tight">SafeLearn AI</h1>
-      </div>
+    <aside className="w-80 h-full bg-slate-900 text-slate-300 flex flex-col relative overflow-hidden border-l border-white/5" dir="rtl">
+      {/* Subtle Gradient background */}
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none"></div>
 
-      {/* Profile Card */}
-      <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 font-bold border border-slate-100">
-            {currentUser?.displayName?.charAt(0) || 'U'}
+      {/* Brand & New Chat */}
+      <div className="p-6 space-y-6 relative z-10">
+        <div className="flex items-center gap-3 px-2">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+            <BrainCircuit size={24} />
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-slate-800">{currentUser?.displayName}</h2>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{currentUser?.role === 'teacher' ? 'معلم' : 'طالب'}</p>
-          </div>
+          <h1 className="text-xl font-black text-white tracking-tight">SafeLearn AI</h1>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-white p-2 rounded-lg border border-slate-100 text-center">
-            <p className="text-[8px] text-slate-400 font-bold mb-1">المستوى</p>
-            <p className="text-xs font-black text-indigo-600">متوسط</p>
-          </div>
-          <div className="bg-white p-2 rounded-lg border border-slate-100 text-center">
-            <p className="text-[8px] text-slate-400 font-bold mb-1">الاستمرارية</p>
-            <div className="flex items-center justify-center gap-1">
-              <Flame size={10} className="text-orange-500" />
-              <span className="text-xs font-black text-orange-500">{progress.streak}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex flex-col gap-2 mb-10">
-        <button 
-          onClick={() => setActiveTab('dashboard')}
-          className={`flex items-center justify-between p-4 rounded-xl font-bold transition-all ${
-            activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-500 hover:bg-slate-50'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <LayoutDashboard size={18} />
-            <span>{currentUser?.role === 'teacher' ? 'لوحة التحكم' : 'إحصائياتي'}</span>
-          </div>
-          <ChevronRight size={16} className={activeTab === 'dashboard' ? 'rotate-180' : ''} />
-        </button>
 
         <button 
           onClick={() => setActiveTab('chat')}
-          className={`flex items-center justify-between p-4 rounded-xl font-bold transition-all ${
-            activeTab === 'chat' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-500 hover:bg-slate-50'
-          }`}
+          className="w-full flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white font-bold transition-all group"
         >
-          <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
             <MessageSquare size={18} />
-            <span>المعلم الذكي</span>
           </div>
-          <ChevronRight size={16} className={activeTab === 'chat' ? 'rotate-180' : ''} />
+          <span>محادثة جديدة</span>
         </button>
+      </div>
 
-        <button className="flex items-center justify-between p-4 rounded-xl font-bold text-slate-500 hover:bg-slate-50 opacity-60">
-          <div className="flex items-center gap-3">
-            <History size={18} />
-            <span>السجل التعليمي</span>
-          </div>
-        </button>
-      </nav>
-
-      {/* System Toggles */}
-      <div className="space-y-4 mb-10">
-        <p className="text-[10px] text-slate-400 font-bold px-4 uppercase tracking-[0.2em] mb-2">أنظمة الذكاء الاصطناعي</p>
-        
-        <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
-              <ShieldCheck size={16} />
-            </div>
-            <div>
-              <p className="text-xs font-black text-emerald-700">Safe Mode</p>
-              <p className="text-[8px] text-emerald-500 font-bold">تلميحات فقط</p>
-            </div>
-          </div>
-          <button onClick={() => setSafeMode(!safeMode)}>
-            {safeMode ? <ToggleRight className="text-emerald-500" size={32} /> : <ToggleLeft className="text-slate-300" size={32} />}
-          </button>
+      {/* Navigation */}
+      <div className="flex-1 overflow-y-auto px-6 space-y-8 custom-scrollbar relative z-10">
+        <div>
+          <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mb-4 px-2">الرئيسية</p>
+          <nav className="space-y-2">
+            <button 
+              onClick={() => setActiveTab('dashboard')}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl font-bold transition-all ${
+                activeTab === 'dashboard' ? 'bg-white/10 text-white' : 'hover:bg-white/5 text-slate-400'
+              }`}
+            >
+              <LayoutDashboard size={18} />
+              <span>{currentUser?.role === 'teacher' ? 'لوحة التحكم' : 'إحصائياتي'}</span>
+            </button>
+          </nav>
         </div>
 
-        <div className="flex items-center justify-between p-4 bg-red-50 rounded-2xl border border-red-100">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white">
-              <GraduationCap size={16} />
+        <div>
+          <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mb-4 px-2">سجل المحادثات</p>
+          <div className="space-y-1">
+            {['شرح مسألة فيثاغورس', 'مراجعة قوانين الحركة', 'أسئلة عن التمثيل الغذائي'].map((item, i) => (
+              <button key={i} className="w-full text-right p-3 rounded-xl text-sm font-medium text-slate-500 hover:bg-white/5 hover:text-slate-300 transition-all truncate">
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mb-4 px-2">الإعدادات الذكية</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5 group hover:border-emerald-500/30 transition-all">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${safeMode ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-600'}`}>
+                  <ShieldCheck size={16} />
+                </div>
+                <span className={`text-xs font-bold ${safeMode ? 'text-emerald-400' : 'text-slate-500'}`}>Safe Mode</span>
+              </div>
+              <button onClick={() => setSafeMode(!safeMode)}>
+                {safeMode ? <ToggleRight className="text-emerald-500" size={28} /> : <ToggleLeft className="text-slate-600" size={28} />}
+              </button>
             </div>
-            <div>
-              <p className="text-xs font-black text-red-700">Exam Mode</p>
-              <p className="text-[8px] text-red-500 font-bold">منع المساعدة</p>
+
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5 group hover:border-red-500/30 transition-all">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${examMode ? 'bg-red-500 text-white' : 'bg-slate-800 text-slate-600'}`}>
+                  <GraduationCap size={16} />
+                </div>
+                <span className={`text-xs font-bold ${examMode ? 'text-red-400' : 'text-slate-500'}`}>Exam Mode</span>
+              </div>
+              <button onClick={() => setExamMode(!examMode)}>
+                {examMode ? <ToggleRight className="text-red-500" size={28} /> : <ToggleLeft className="text-slate-600" size={28} />}
+              </button>
             </div>
           </div>
-          <button onClick={() => setExamMode(!examMode)}>
-            {examMode ? <ToggleRight className="text-red-500" size={32} /> : <ToggleLeft className="text-slate-300" size={32} />}
-          </button>
         </div>
       </div>
 
-      {/* Progress Footer */}
-      <div className="mt-auto pt-6 border-t border-slate-50">
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-5 rounded-2xl text-white shadow-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <Trophy size={18} className="text-yellow-400" />
-            <span className="text-xs font-bold">إنجازاتك اليوم</span>
+      {/* Footer Profile */}
+      <div className="p-6 bg-black/20 backdrop-blur-md border-t border-white/5 relative z-10">
+         <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg shadow-indigo-500/20">
+            {currentUser?.displayName?.charAt(0) || 'U'}
           </div>
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-2xl font-black">{progress.solved}</p>
-              <p className="text-[8px] text-slate-400 font-bold">مسائل تم حلها</p>
-            </div>
-            <div className="text-left">
-              <p className="text-2xl font-black">{progress.hintsUsed}</p>
-              <p className="text-[8px] text-slate-400 font-bold">تلميحات مستخدمة</p>
+          <div className="flex-1">
+            <h2 className="text-sm font-bold text-white truncate">{currentUser?.displayName}</h2>
+            <div className="flex items-center gap-2">
+              <div className="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
+                <div className="bg-indigo-500 h-full w-[65%]"></div>
+              </div>
+              <span className="text-[8px] font-black text-indigo-400 whitespace-nowrap">LVL 4</span>
             </div>
           </div>
         </div>
-        
+
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 p-4 mt-6 text-red-500 font-bold hover:bg-red-50 rounded-xl transition-all"
+          className="w-full flex items-center gap-3 p-3 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all font-bold text-sm"
         >
           <LogOut size={18} />
           <span>تسجيل الخروج</span>
