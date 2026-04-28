@@ -32,10 +32,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Tajawal', sans-serif;
+}
+
+html {
+    font-size: 18px; /* Scaled up from default */
 }
 
 body {
+    font-family: 'Tajawal', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
     min-height: 100vh;
@@ -44,6 +48,7 @@ body {
     align-items: center;
     overflow: hidden;
     position: relative;
+    transition: background 0.5s ease, color 0.5s ease;
 }
 
 /* Background Animations */
@@ -331,9 +336,9 @@ body {
 
 /* App Container */
 .container {
-    width: 100%;
-    max-width: 1400px;
-    height: 90vh;
+    width: 95vw;
+    max-width: 1600px;
+    height: 95vh;
     display: flex;
     border-radius: 24px;
     overflow: hidden;
@@ -344,9 +349,9 @@ body {
 
 /* Sidebar */
 .sidebar {
-    width: 300px;
+    width: 320px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 2rem;
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--glass-border);
@@ -355,14 +360,14 @@ body {
 .sidebar .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 1.6rem;
+    gap: 15px;
+    font-size: 2rem; /* Scaled up */
     font-weight: 900;
     letter-spacing: -0.5px;
     background: linear-gradient(135deg, #fff, var(--primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2rem;
 }
 
 .sidebar .logo i {
@@ -370,6 +375,26 @@ body {
     color: var(--primary);
     -webkit-text-fill-color: initial;
     filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+/* Behavioral System Styles */
+.behavior-score {
+    margin: 1.5rem 1rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--primary-glow);
+}
+
+.level-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+    margin-top: 10px;
 }
 
 .sidebar-history {
@@ -970,9 +995,78 @@ header {
 }
 
 
-/* Create Class Modal Specifics */
-.class-setup {
-    margin-top: 2rem;
+/* Impact Proof & Behavioral Enforcement */
+.impact-comparison {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 2rem;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 20px;
+    margin-top: 1.5rem;
+}
+
+.impact-stat {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.impact-stat span { font-size: 1rem; color: var(--text-muted); }
+.impact-stat strong { font-size: 2rem; }
+
+.impact-arrow {
+    font-size: 2.5rem;
+    color: var(--primary);
+    animation: pulse 2s infinite;
+}
+
+.impact-summary {
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-main);
+}
+
+.full-width { grid-column: 1 / -1; }
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Overall Scaling for 'Natural' Feel */
+.view-section header {
+    padding: 3rem 4rem;
+}
+
+.header-title h3 {
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+
+.chat-box {
+    padding: 3rem;
+}
+
+.msg-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.5; }
 }
 
 .code-display {

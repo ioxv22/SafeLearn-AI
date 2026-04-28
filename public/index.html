@@ -89,11 +89,18 @@
                 <h2>SafeLearn AI</h2>
             </div>
             
+            <div class="behavior-score glass-panel">
+                <span>سلوك التعلم (Behavior Score)</span>
+                <strong id="behaviorScore">92%</strong>
+                <div class="progress-bar"><div class="progress-fill" style="width: 92%; background: var(--success)"></div></div>
+                <div class="level-badge" id="thinkerLevel">Independent Solver</div>
+            </div>
+
             <div class="sidebar-stats glass-panel">
                 <div class="stat-mini">
-                    <span>مستوى الاستقلالية</span>
-                    <strong id="independenceScore">85%</strong>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                    <span>مستوى الاستقلالية (Independence)</span>
+                    <strong id="independenceScore">88%</strong>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 88%"></div></div>
                 </div>
             </div>
 
@@ -153,16 +160,28 @@
                 </header>
 
                 <div class="chat-box" id="chatBox">
-                    <!-- Messages will be injected here -->
+                    <div class="message bot-message">
+                        <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
+                        <div class="msg-content glass-msg">
+                            مرحباً بك في الجيل الجديد من <strong>SafeLearn AI</strong>. <br><br>
+                            أنا لست مجرد مساعد، أنا شريكك في التفكير. في هذا النظام، سأقوم بإرشادك عبر خطوات ذكية، وسأطلب منك كتابة محاولتك أولاً لضمان بناء "عضلة التفكير" لديك. <br><br>
+                            🛡️ <strong>نظام التعلم الأخلاقي نشط:</strong> لن أعطيك حلولاً جاهزة، بل سأجعلك عبقرياً في حلها بنفسك. ما هو التحدي الذي تود خوضه اليوم؟
+                        </div>
+                    </div>
                 </div>
 
                 <div id="hintRevealControl" class="hint-control-area hidden">
-                    <div class="timer-display" id="hintTimer">00:10</div>
-                    <button id="nextHintBtn" class="btn-premium" onclick="revealNextHint()" disabled>
-                        <i class="fa-solid fa-lightbulb"></i>
-                        <span>أريد تلميحاً إضافياً</span>
-                    </button>
-                    <p class="hint-note">فكر قليلاً قبل الانتقال للخطوة التالية...</p>
+                    <div class="enforcement-area">
+                        <p class="hint-note">✍️ اكتب محاولتك أولاً ليتم تفعيل التلميح التالي:</p>
+                        <textarea id="attemptInput" placeholder="اكتب طريقتك في التفكير هنا..." rows="2"></textarea>
+                        <div class="flex-center">
+                            <div class="timer-display" id="hintTimer">00:10</div>
+                            <button id="nextHintBtn" class="btn-premium" onclick="validateAndRevealHint()" disabled>
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <span>تفعيل التلميح التالي</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="input-area">
@@ -316,16 +335,19 @@
                         </div>
                     </div>
 
-                    <div class="report-card glass-panel">
-                        <h3><i class="fa-solid fa-chart-area text-blue"></i> اتجاهات النشاط الأكاديمي</h3>
-                        <div class="chart-container">
-                            <div class="simple-bar-chart">
-                                <div class="bar" style="height: 40%" data-label="أحد"></div>
-                                <div class="bar" style="height: 60%" data-label="اثن"></div>
-                                <div class="bar" style="height: 85%" data-label="ثلاث"></div>
-                                <div class="bar" style="height: 45%" data-label="أربع"></div>
-                                <div class="bar" style="height: 90%" data-label="خميس"></div>
+                    <div class="report-card glass-panel full-width">
+                        <h3><i class="fa-solid fa-gauge-high text-purple"></i> إثبات الأثر (Impact Proof: Before vs After)</h3>
+                        <div class="impact-comparison">
+                            <div class="impact-stat">
+                                <span>المحاولات الأولى (بمساعدة)</span>
+                                <strong class="text-muted">65% استقلالية</strong>
                             </div>
+                            <div class="impact-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="impact-stat">
+                                <span>المحاولات اللاحقة (مستقلة)</span>
+                                <strong class="text-success">92% استقلالية</strong>
+                            </div>
+                            <p class="impact-summary">📈 تحسن سلوك الطالب في التفكير بنسبة <strong>42%</strong> خلال الأسبوع الماضي.</p>
                         </div>
                     </div>
                 </div>

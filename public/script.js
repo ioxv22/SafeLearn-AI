@@ -8,6 +8,14 @@ let isVoiceTutorActive = false;
 let isChallengeMode = false;
 let totalQuestions = 0;
 let hintsUsedTotal = 0;
+let behaviorScoreValue = 92;
+
+const selfAwarePhrases = [
+    "أنا هنا لأبني مهارتك في التفكير، وليس لأعطيك الحل الجاهز.",
+    "تذكر أن الخطأ هو جزء من التعلم، حاول وسأقوم بتوجيهك.",
+    "هدفي هو أن تصبح مفكراً مستقلاً، لذا سأعطيك طرف الخيط فقط.",
+    "الذكاء ليس في الوصول للحل، بل في فهم كيفية الوصول إليه."
+];
 
 // Elements
 const loginPage = document.getElementById('loginPage');
@@ -156,7 +164,8 @@ async function sendMessage() {
         showThinking();
         setTimeout(() => {
             removeThinking();
-            appendMessage("أفهم أنك تريد الوصول للحل بسرعة، ولكن لنجرب التفكير في أول خطوة معاً. هل يمكنك إخباري ما هو المعطى الأول في المسألة؟", false);
+            const selfAware = selfAwarePhrases[Math.floor(Math.random() * selfAwarePhrases.length)];
+            appendMessage(`${selfAware} أفهم أنك تريد الوصول للحل بسرعة، ولكن لنجرب التفكير في أول خطوة معاً. هل يمكنك إخباري ما هو المعطى الأول في المسألة؟`, false);
         }, 1500);
         return;
     }
@@ -238,19 +247,65 @@ function startHintTimer() {
     }, 1000);
 }
 
+function validateAndRevealHint() {
+    const attempt = document.getElementById('attemptInput').value.trim();
+    if (attempt.length < 10) {
+        showToast('يرجى كتابة محاولة جادة (١٠ أحرف على الأقل) قبل رؤية التلميح التالي.', 'warning');
+        return;
+    }
+    
+    // Update behavior score based on effort
+    const effortBonus = Math.min(5, Math.floor(attempt.length / 20));
+    updateBehaviorScore(effortBonus);
+    
+    document.getElementById('attemptInput').value = '';
+    revealNextHint();
+}
+
 function revealNextHint() {
     currentHintIndex++;
     hintsUsedTotal++;
     updateIndependenceScore(-2);
+    updateBehaviorScore(-1); // Penalty for needing more help
     
     if (currentHintIndex < currentHints.length) {
         displayHint(currentHints[currentHintIndex]);
         if (currentHintIndex === currentHints.length - 1) {
             hideHintControls();
+            showMicroReflection();
         } else {
             startHintTimer();
         }
     }
+}
+
+function showMicroReflection() {
+    setTimeout(() => {
+        appendMessage("🎉 رائع! لقد وصلت لنهاية التلميحات. أخبرني بكلمة واحدة، ما هو المفهوم الجديد الذي تعلمته الآن؟", false);
+        updateBehaviorScore(5); // Reflection bonus
+    }, 2000);
+}
+
+function updateBehaviorScore(change) {
+    behaviorScoreValue = Math.max(0, Math.min(100, behaviorScoreValue + change));
+    const scoreEl = document.getElementById('behaviorScore');
+    if (scoreEl) {
+        scoreEl.innerText = `${behaviorScoreValue}%`;
+        document.querySelector('.behavior-score .progress-fill').style.width = `${behaviorScoreValue}%`;
+    }
+    updateThinkerLevel();
+}
+
+function updateThinkerLevel() {
+    const levelEl = document.getElementById('thinkerLevel');
+    let level = "Beginner Thinker";
+    const score = parseInt(document.getElementById('independenceScore').innerText);
+    
+    if (score > 90) level = "Critical Thinker";
+    else if (score > 75) level = "Independent Solver";
+    else if (score > 50) level = "Guided Learner";
+    
+    if (levelEl) levelEl.innerText = level;
 }
 
 function displayHint(text) {
