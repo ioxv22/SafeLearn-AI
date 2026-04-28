@@ -1,21 +1,26 @@
 import React from 'react';
 import { useStore } from '../store';
-import { BrainCircuit, MessageSquare, LayoutDashboard, Shield, ShieldAlert, Flame, Target, LogOut, Video } from 'lucide-react';
+import { BrainCircuit, MessageSquare, LayoutDashboard, Shield, ShieldAlert, Flame, Target, LogOut, Video, Sun, Moon } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const Sidebar = () => {
-  const { currentUser, logout, viewMode, setViewMode, safeMode, toggleSafeMode, examMode, toggleExamMode, userLevel, stats, setVideoModalOpen } = useStore();
+  const { currentUser, logout, viewMode, setViewMode, safeMode, toggleSafeMode, examMode, toggleExamMode, userLevel, stats, setVideoModalOpen, isDarkMode, toggleDarkMode } = useStore();
 
   return (
     <aside className="w-72 bg-sidebar border-r border-border flex flex-col h-full transition-colors relative">
-      <div className="p-6 flex items-center gap-3 border-b border-border">
-        <div className="bg-primary p-2 rounded-xl text-white shadow-lg shadow-primary/30">
-          <BrainCircuit size={24} />
+      <div className="p-6 flex items-center justify-between border-b border-border">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary p-2 rounded-xl text-white shadow-lg shadow-primary/30">
+            <BrainCircuit size={24} />
+          </div>
+          <div>
+            <h1 className="font-bold text-xl leading-tight">SafeLearn AI</h1>
+            <p className="text-xs text-primary font-medium">{currentUser?.role === 'teacher' ? 'إدارة المعلمين' : 'منصة الطالب'}</p>
+          </div>
         </div>
-        <div>
-          <h1 className="font-bold text-xl leading-tight">SafeLearn AI</h1>
-          <p className="text-xs text-primary font-medium">{currentUser?.role === 'teacher' ? 'إدارة المعلمين' : 'منصة الطالب'}</p>
-        </div>
+        <button onClick={toggleDarkMode} className="p-2 bg-background border border-border rounded-full hover:bg-border/50 text-foreground/80 transition-colors">
+          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
       </div>
 
       <nav className="p-4 space-y-2">
@@ -106,6 +111,11 @@ export const Sidebar = () => {
           <div className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity text-red-500">
             <LogOut size={16} />
           </div>
+        </div>
+        
+        <div className="mt-4 text-center text-[11px] text-foreground/40 font-medium pb-2">
+          جميع الحقوق محفوظة © 2026<br/>
+          لمدرسة الاتحاد الثانوية
         </div>
       </div>
     </aside>

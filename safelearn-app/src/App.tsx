@@ -21,13 +21,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground transition-colors font-sans overflow-hidden">
-      {/* Top Right Theme Toggle */}
-      <button 
-        onClick={toggleDarkMode}
-        className="absolute top-4 right-4 z-50 p-3 bg-sidebar border border-border rounded-full text-foreground shadow-sm hover:scale-105 transition-transform"
-      >
-        {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-      </button>
+
 
       <AnimatePresence mode="wait">
         {!currentUser ? (

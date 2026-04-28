@@ -81,6 +81,24 @@ app.post('/api/video', async (req, res) => {
     }
 });
 
+app.get('/api/youtube', async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query) return res.status(400).json({ success: false, error: 'Query missing' });
+        const response = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
+        const html = await response.text();
+        const match = html.match(/watch\?v=([a-zA-Z0-9_-]{11})/);
+        if (match && match[1]) {
+            res.json({ success: true, videoId: match[1] });
+        } else {
+            res.json({ success: false, error: 'No video found' });
+        }
+    } catch (error) {
+        console.error("YouTube Search Error:", error);
+        res.status(500).json({ success: false, error: "Search failed" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 SafeLearn Server is running on http://localhost:${PORT}`);
 });

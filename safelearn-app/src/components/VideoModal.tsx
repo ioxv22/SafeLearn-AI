@@ -37,19 +37,22 @@ export const VideoModal = () => {
     setErrorMsg('');
     
     if (mode === 'youtube') {
-      setTimeout(() => {
-        const query = prompt.toLowerCase();
-        let foundId = DEMO_VIDEOS['افتراضي'];
-        for (const [key, id] of Object.entries(DEMO_VIDEOS)) {
-          if (query.includes(key)) {
-            foundId = id;
-            break;
-          }
+      try {
+        const response = await fetch(`http://localhost:3000/api/youtube?q=${encodeURIComponent(prompt)}`);
+        const data = await response.json();
+        if (data.success && data.videoId) {
+          setGeneratedMediaUrl(`https://www.youtube.com/embed/${data.videoId}?autoplay=1&rel=0`);
+          setIsIframe(true);
+        } else {
+          // Fallback to demo video if API fails
+          setGeneratedMediaUrl(`https://www.youtube.com/embed/NybHckSEQBI?autoplay=1&rel=0`);
+          setIsIframe(true);
         }
-        setGeneratedMediaUrl(`https://www.youtube.com/embed/${foundId}?autoplay=1&rel=0`);
+      } catch (e) {
+        setGeneratedMediaUrl(`https://www.youtube.com/embed/NybHckSEQBI?autoplay=1&rel=0`);
         setIsIframe(true);
-        setIsLoading(false);
-      }, 800);
+      }
+      setIsLoading(false);
       return;
     }
 
