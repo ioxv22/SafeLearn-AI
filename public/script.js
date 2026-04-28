@@ -1,4 +1,4 @@
-// State
+// Elite Behavioral & AI State
 let currentUser = null;
 let liveCheatCount = 0;
 let currentHints = [];
@@ -8,7 +8,16 @@ let isVoiceTutorActive = false;
 let isChallengeMode = false;
 let totalQuestions = 0;
 let hintsUsedTotal = 0;
-let behaviorScoreValue = 92;
+let behaviorScoreValue = 94;
+let independenceScoreValue = 88;
+let solveHistory = [];
+
+const selfAwarePhrases = [
+    "هدفي أن تتعلم كيف تفكر، وليس فقط أن تحصل على النتيجة.",
+    "تذكر: كل محاولة تقوم بها هي خطوة نحو بناء 'عضلة التفكير'.",
+    "أنا هنا لأرشدك، الحل الحقيقي يكمن في عقلك أنت.",
+    "الذكاء ليس في معرفة الإجابة، بل في فهم الرحلة إليها."
+];
 
 const selfAwarePhrases = [
     "أنا هنا لأبني مهارتك في التفكير، وليس لأعطيك الحل الجاهز.",
@@ -151,12 +160,12 @@ async function sendMessage() {
 
     totalQuestions++;
     
-    // Smart Anti-Cheat (Intelligent Redirection)
-    const cheatRegex = /(حل|اعطني|اجابة|الجواب|solve|answer|just give it)/i;
+    // Smart Anti-Cheat System
+    const cheatRegex = /(حل|اعطني|اجابة|الجواب|solve|answer|just give it|كامل|مباشر)/i;
     if (cheatRegex.test(text)) {
         liveCheatCount++;
-        updateIndependenceScore(-5);
-        showToast('تنبيه: محاولة غش مكتشفة! تذكر أن الفهم هو هدفنا.', 'danger');
+        updateBehaviorScore(-10);
+        showToast('تنبيه: محاولة تخطي التفكير! تذكر أن هدفنا هو التعلم.', 'danger');
         
         appendMessage(text, true);
         userInput.value = '';
@@ -164,14 +173,15 @@ async function sendMessage() {
         showThinking();
         setTimeout(() => {
             removeThinking();
-            const selfAware = selfAwarePhrases[Math.floor(Math.random() * selfAwarePhrases.length)];
-            appendMessage(`${selfAware} أفهم أنك تريد الوصول للحل بسرعة، ولكن لنجرب التفكير في أول خطوة معاً. هل يمكنك إخباري ما هو المعطى الأول في المسألة؟`, false);
-        }, 1500);
+            const phrase = selfAwarePhrases[Math.floor(Math.random() * selfAwarePhrases.length)];
+            appendMessage(`🤖 ${phrase} \n\nأفهم رغبتك في الوصول للحل بسرعة، ولكن لنجرب أول خطوة معاً. ما هو المعطى الأهم في هذا السؤال برأيك؟`, false);
+        }, 1200);
         return;
     }
 
     appendMessage(text, true);
     userInput.value = '';
+    autoResizeInput();
 
     showThinking();
 
@@ -180,11 +190,11 @@ async function sendMessage() {
         const data = await response.json();
         removeThinking();
         
-        const reply = data.reply || "أنا هنا للمساعدة، دعنا نفكر في الخطوة التالية سوياً.";
+        const reply = data.reply || "أنا هنا للمساعدة، دعنا نحلل المسألة خطوة بخطوة.";
         
-        // Split reply into hints if it contains steps
-        if (reply.includes('الخطوة')) {
-            currentHints = reply.split(/\n|الخطوة \d+:/).filter(h => h.trim().length > 5);
+        // Socratic Logic: Split into hints if steps are present
+        if (reply.includes('الخطوة') || reply.includes('أولاً')) {
+            currentHints = reply.split(/\n|الخطوة \d+:|أولاً:|ثانياً:|ثالثاً:/).filter(h => h.trim().length > 5);
             currentHintIndex = 0;
             displayHint(currentHints[0]);
             showHintControls();
@@ -199,84 +209,29 @@ async function sendMessage() {
     }
 }
 
-function showThinking() {
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message bot-message thinking-msg';
-    typingDiv.id = 'thinkingDiv';
-    typingDiv.innerHTML = `
-        <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
+function autoResizeInput() {
+    userInput.style.height = 'auto';
+    userInput.style.height = userInput.scrollHeight + 'px';
+}
+
+function appendMessage(text, isUser) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'} fade-in`;
+    
+    const avatar = isUser ? 
+        'https://ui-avatars.com/api/?name=ST&background=6366f1&color=fff' : 
+        'https://ui-avatars.com/api/?name=AI&background=10b981&color=fff';
+        
+    msgDiv.innerHTML = `
+        <img src="${avatar}" class="msg-avatar">
         <div class="msg-content glass-msg">
-            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            ${text.replace(/\n/g, '<br>')}
+            <span class="msg-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
     `;
-    chatBox.appendChild(typingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function removeThinking() {
-    const div = document.getElementById('thinkingDiv');
-    if (div) div.remove();
-}
-
-function showHintControls() {
-    document.getElementById('hintRevealControl').classList.remove('hidden');
-}
-
-function hideHintControls() {
-    document.getElementById('hintRevealControl').classList.add('hidden');
-}
-
-function startHintTimer() {
-    let seconds = 10;
-    const timerEl = document.getElementById('hintTimer');
-    const btn = document.getElementById('nextHintBtn');
     
-    btn.disabled = true;
-    timerEl.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
-    
-    if (hintTimerInterval) clearInterval(hintTimerInterval);
-    
-    hintTimerInterval = setInterval(() => {
-        seconds--;
-        timerEl.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
-        if (seconds <= 0) {
-            clearInterval(hintTimerInterval);
-            btn.disabled = false;
-            showToast('يمكنك الآن الانتقال للتلميح التالي', 'info');
-        }
-    }, 1000);
-}
-
-function validateAndRevealHint() {
-    const attempt = document.getElementById('attemptInput').value.trim();
-    if (attempt.length < 10) {
-        showToast('يرجى كتابة محاولة جادة (١٠ أحرف على الأقل) قبل رؤية التلميح التالي.', 'warning');
-        return;
-    }
-    
-    // Update behavior score based on effort
-    const effortBonus = Math.min(5, Math.floor(attempt.length / 20));
-    updateBehaviorScore(effortBonus);
-    
-    document.getElementById('attemptInput').value = '';
-    revealNextHint();
-}
-
-function revealNextHint() {
-    currentHintIndex++;
-    hintsUsedTotal++;
-    updateIndependenceScore(-2);
-    updateBehaviorScore(-1); // Penalty for needing more help
-    
-    if (currentHintIndex < currentHints.length) {
-        displayHint(currentHints[currentHintIndex]);
-        if (currentHintIndex === currentHints.length - 1) {
-            hideHintControls();
-            showMicroReflection();
-        } else {
-            startHintTimer();
-        }
-    }
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
 }
 
 function showMicroReflection() {

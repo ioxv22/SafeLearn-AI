@@ -194,7 +194,7 @@
                         </button>
                     </div>
                     <div class="input-wrapper">
-                        <input type="text" id="userInput" placeholder="اسألني عن أي مفهوم (مثال: شرح الجاذبية)..." onkeypress="handleKeyPress(event)">
+                        <textarea id="userInput" placeholder="صف لي المشكلة التي تواجهها أو اسأل عن مفهوم معين..." rows="1" onkeypress="handleKeyPress(event)" oninput="autoResizeInput()"></textarea>
                         <button onclick="sendMessage()" class="send-btn">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
