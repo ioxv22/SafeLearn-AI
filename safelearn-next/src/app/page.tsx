@@ -32,7 +32,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-500 border-t-transparent"></div>
       </div>
     );
@@ -40,7 +40,7 @@ export default function Home() {
 
   if (!currentUser) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100">
+      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100 p-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,7 +89,7 @@ export default function Home() {
 
   // If logged in, show their dashboard based on role
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900">
+    <div className="flex min-h-screen bg-slate-50 text-slate-900">
       <div className="p-8 w-full max-w-5xl mx-auto flex flex-col gap-6">
         <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm">
           <div className="flex items-center gap-4">
