@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useStore } from '@/store';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
@@ -7,9 +8,11 @@ import { BrainCircuit, GraduationCap, School, LogOut, Sparkles, LayoutDashboard,
 import { motion } from 'framer-motion';
 import { TeacherDashboard } from '@/components/TeacherDashboard';
 import { StudentChat } from '@/components/StudentChat';
+import { Sidebar } from '@/components/Sidebar';
 
 export default function Home() {
   const { currentUser, isLoading, setCurrentUser } = useStore();
+  const [activeTab, setActiveTab] = useState('chat');
 
   const handleGoogleLogin = async () => {
     try {
@@ -100,33 +103,32 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900" suppressHydrationWarning>
-      <div className="p-8 w-full max-w-6xl mx-auto flex flex-col gap-6">
-        <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex items-center gap-4">
-            {currentUser.photoURL ? (
-              <img src={currentUser.photoURL} alt="Profile" className="w-12 h-12 rounded-full border-2 border-indigo-50" />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                {currentUser.displayName?.charAt(0) || '?'}
-              </div>
-            )}
-            <div>
-              <h2 className="text-xl font-bold">{currentUser.displayName}</h2>
-              <p className="text-sm text-slate-400 font-bold uppercase tracking-wider">
-                {currentUser.role === 'teacher' ? 'حساب المعلم' : 'حساب الطالب'}
-              </p>
+    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden" suppressHydrationWarning>
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      <main className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Top Header for Content Area */}
+        <header className="h-20 border-b border-slate-100 bg-white/50 backdrop-blur-sm flex items-center px-10 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+              {activeTab === 'dashboard' ? <LayoutDashboard size={20} /> : <MessageCircle size={20} />}
             </div>
+            <h2 className="text-xl font-bold text-slate-800">
+              {activeTab === 'dashboard' ? 'لوحة المراقبة والأداء' : 'المعلم الذكي - Safe AI'}
+            </h2>
           </div>
-          <button onClick={handleLogout} className="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 transition-colors">
-            تسجيل الخروج
-          </button>
+        </header>
+
+        {/* Content Area */}
+        <div className="flex-1 p-10 overflow-y-auto">
+          <div className="max-w-5xl mx-auto h-full">
+            {activeTab === 'dashboard' ? <TeacherDashboard /> : <StudentChat />}
+          </div>
         </div>
 
-        <div className="flex-1">
-          {currentUser.role === 'teacher' ? <TeacherDashboard /> : <StudentChat />}
-        </div>
-      </div>
+        {/* Background Decorative Blur */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+      </main>
     </div>
   );
 }

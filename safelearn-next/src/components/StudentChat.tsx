@@ -12,7 +12,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function StudentChat() {
-  const { currentUser } = useStore();
+  const { currentUser, safeMode, examMode } = useStore();
   const [classCode, setClassCode] = useState('');
   const [studentName, setStudentName] = useState(currentUser?.displayName === 'طالب تجريبي' ? '' : (currentUser?.displayName || ''));
   const [activeClass, setActiveClass] = useState<any>(null);
@@ -57,7 +57,7 @@ export function StudentChat() {
     setIsJoining(false);
     setMessages([{ 
       role: 'assistant', 
-      content: `مرحباً بك يا ${studentName}! 👋 أنا معلمك الذكي في فصل ${clsData.name}. يسعدني جداً مساعدتك في فهم أي مسألة تواجهك. تذكر، أنا هنا لأدلك على الطريق وليس لأعطيك الحل النهائي. بمَ تريد أن نبدأ؟`,
+      content: `مرحباً بك يا ${studentName}! 👋 أنا معلمك الذكي في فصل ${clsData.name}. ${examMode ? 'نحن الآن في وضع الاختبار، لذا سأقوم بمراقبة إجاباتك فقط.' : 'يسعدني جداً مساعدتك في فهم أي مسألة تواجهك.'}`,
       timestamp: new Date().toLocaleTimeString('ar-AE', { hour: '2-digit', minute: '2-digit' })
     }]);
   };
@@ -68,7 +68,7 @@ export function StudentChat() {
     setActiveClass({ id: 'personal', name: 'التعلم المستقل' });
     setMessages([{ 
       role: 'assistant', 
-      content: `أهلاً بك يا ${personalName}! في وضع التعلم المستقل، يمكنك سؤالي عن أي شيء وسأقوم بتفكيك المسألة معك خطوة بخطوة. كيف يمكنني إرشادك الآن؟`,
+      content: `أهلاً بك يا ${personalName}! كيف يمكنني إرشادك الآن؟`,
       timestamp: new Date().toLocaleTimeString('ar-AE', { hour: '2-digit', minute: '2-digit' })
     }]);
   };
@@ -92,7 +92,9 @@ export function StudentChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage.content,
-          history: messages.map(m => ({ role: m.role, content: m.content }))
+          history: messages.map(m => ({ role: m.role, content: m.content })),
+          safeMode,
+          examMode
         })
       });
 
