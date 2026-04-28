@@ -34,9 +34,9 @@ export const useStore = create<StoreState>((set) => ({
   examMode: false,
   activeClass: null, // Initial value
   progress: {
-    solved: 5,
-    hintsUsed: 12,
-    streak: 3,
+    solved: 42,
+    hintsUsed: 128,
+    streak: 15,
   },
   setCurrentUser: (user) => set({ currentUser: user }),
   setLoading: (loading) => set({ isLoading: loading }),
