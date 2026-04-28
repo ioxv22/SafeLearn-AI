@@ -15,6 +15,11 @@
         <div class="blob blob-2"></div>
     </div>
 
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="تبديل الوضع">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
     <!-- Login Page -->
     <div id="loginPage" class="login-container glass-panel">
         <div class="login-header">
@@ -83,21 +88,41 @@
                 <i class="fa-solid fa-brain"></i>
                 <h2>SafeLearn AI</h2>
             </div>
+            
+            <div class="sidebar-stats glass-panel">
+                <div class="stat-mini">
+                    <span>مستوى الاستقلالية</span>
+                    <strong id="independenceScore">85%</strong>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                </div>
+            </div>
+
             <nav class="menu">
                 <a href="#" id="menuTeacherAI" class="active"><i class="fa-solid fa-robot"></i> المعلم الذكي</a>
                 <a href="#" id="menuClassroom"><i class="fa-solid fa-graduation-cap"></i> فصلي الدراسي</a>
                 <a href="#" id="menuReports"><i class="fa-solid fa-chart-line"></i> تقارير النظام</a>
                 <a href="#" id="menuTeacherControl" class="teacher-only hidden"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم المعلم</a>
             </nav>
-            
-            <div class="mode-badge pulse-anim">
-                <i class="fa-solid fa-shield-halved"></i> 
-                <div>
-                    <strong>وضع التعلم الآمن</strong>
-                    <span>يمنع الغش ويشجع التفكير</span>
+
+            <div class="sidebar-history">
+                <p class="history-title">سجل المحادثات</p>
+                <div class="history-items">
+                    <div class="history-item active"><span>قوانين نيوتن</span><i class="fa-solid fa-message"></i></div>
+                    <div class="history-item"><span>التفاضل والتكامل</span><i class="fa-solid fa-message"></i></div>
+                    <div class="history-item"><span>تفاعل الأكسدة</span><i class="fa-solid fa-message"></i></div>
                 </div>
             </div>
             
+            <div class="sidebar-footer">
+                <div class="mode-badge pulse-anim">
+                    <i class="fa-solid fa-shield-check"></i> 
+                    <div>
+                        <strong>Safe Mode: ON</strong>
+                        <span>التعلم الأخلاقي نشط</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="logout-btn" id="logoutBtn">
                 <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
             </div>
@@ -128,17 +153,29 @@
                 </header>
 
                 <div class="chat-box" id="chatBox">
-                    <div class="message bot-message">
-                        <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
-                        <div class="msg-content glass-msg">
-                            مرحباً بك في <strong>SafeLearn AI</strong>. أنا معلمك الذكي المصمم لمساعدتك على الفهم وليس مجرد الحل. ما هو المفهوم الذي تود أن نبسطه سوياً اليوم؟
-                        </div>
-                    </div>
+                    <!-- Messages will be injected here -->
+                </div>
+
+                <div id="hintRevealControl" class="hint-control-area hidden">
+                    <div class="timer-display" id="hintTimer">00:10</div>
+                    <button id="nextHintBtn" class="btn-premium" onclick="revealNextHint()" disabled>
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>أريد تلميحاً إضافياً</span>
+                    </button>
+                    <p class="hint-note">فكر قليلاً قبل الانتقال للخطوة التالية...</p>
                 </div>
 
                 <div class="input-area">
+                    <div class="input-actions">
+                        <button class="btn-icon" id="voiceTutorBtn" onclick="toggleVoiceTutor()" title="الشرح الصوتي">
+                            <i class="fa-solid fa-microphone-lines"></i>
+                        </button>
+                        <button class="btn-icon" id="challengeModeBtn" onclick="toggleChallengeMode()" title="وضع التحدي">
+                            <i class="fa-solid fa-fire"></i>
+                        </button>
+                    </div>
                     <div class="input-wrapper">
-                        <input type="text" id="userInput" placeholder="اكتب سؤالك هنا (مثال: اشرح لي قانون نيوتن)..." onkeypress="handleKeyPress(event)">
+                        <input type="text" id="userInput" placeholder="اسألني عن أي مفهوم (مثال: شرح الجاذبية)..." onkeypress="handleKeyPress(event)">
                         <button onclick="sendMessage()" class="send-btn">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -255,15 +292,60 @@
             <div id="reportsView" class="view-section hidden">
                 <header>
                     <div class="header-title">
-                        <h3>تقارير النزاهة والتقدم</h3>
-                        <p>تحليلات عميقة حول سلوك الطلاب وتطورهم الأكاديمي</p>
+                        <h3>تحليلات الأداء والنزاهة</h3>
+                        <p>تقارير ذكاء اصطناعي مفصلة حول تطور الطلاب</p>
                     </div>
                 </header>
-                <div class="empty-state">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <h3>تحليلات البيانات الضخمة</h3>
-                    <p>يتم الآن تحليل أكثر من ١٠,٠٠٠ محادثة تعليمية لإنتاج تقارير الدقة الأخلاقية.</p>
-                    <button class="btn-premium">توليد تقرير شامل</button>
+                
+                <div class="reports-grid grid">
+                    <div class="report-card glass-panel">
+                        <h3><i class="fa-solid fa-brain text-emerald"></i> رؤى الذكاء الاصطناعي (AI Insights)</h3>
+                        <div class="insight-list">
+                            <div class="insight-item warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <p>هناك زيادة بنسبة 15% في محاولات الغش في مادة الرياضيات (قسم التفاضل).</p>
+                            </div>
+                            <div class="insight-item success">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <p>تحسن ملحوظ في مستوى الاستقلالية للطالب "ياسين محمد" بنسبة 22%.</p>
+                            </div>
+                            <div class="insight-item info">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <p>الطلاب يفضلون الشرح المرئي للمفاهيم الفيزيائية المعقدة.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card glass-panel">
+                        <h3><i class="fa-solid fa-chart-area text-blue"></i> اتجاهات النشاط الأكاديمي</h3>
+                        <div class="chart-container">
+                            <div class="simple-bar-chart">
+                                <div class="bar" style="height: 40%" data-label="أحد"></div>
+                                <div class="bar" style="height: 60%" data-label="اثن"></div>
+                                <div class="bar" style="height: 85%" data-label="ثلاث"></div>
+                                <div class="bar" style="height: 45%" data-label="أربع"></div>
+                                <div class="bar" style="height: 90%" data-label="خميس"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="topic-weakness glass-panel">
+                    <h3>تحليل الفجوات المعرفية (Topic Weaknesses)</h3>
+                    <div class="topic-bars">
+                        <div class="topic-item">
+                            <span>الجبر</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 30%; background: var(--danger)"></div></div>
+                        </div>
+                        <div class="topic-item">
+                            <span>الميكانيكا</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 75%; background: var(--success)"></div></div>
+                        </div>
+                        <div class="topic-item">
+                            <span>الكيمياء العضوية</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 55%; background: var(--warning)"></div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

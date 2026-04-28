@@ -1,6 +1,13 @@
 // State
 let currentUser = null;
 let liveCheatCount = 0;
+let currentHints = [];
+let currentHintIndex = 0;
+let hintTimerInterval = null;
+let isVoiceTutorActive = false;
+let isChallengeMode = false;
+let totalQuestions = 0;
+let hintsUsedTotal = 0;
 
 // Elements
 const loginPage = document.getElementById('loginPage');
@@ -23,6 +30,19 @@ const menuTeacherAI = document.getElementById('menuTeacherAI');
 const menuTeacherControl = document.getElementById('menuTeacherControl');
 const menuClassroom = document.getElementById('menuClassroom');
 const menuReports = document.getElementById('menuReports');
+
+// Theme System
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    const icon = document.getElementById('themeToggle').querySelector('i');
+    icon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    showToast(`تم تفعيل الوضع ${newTheme === 'dark' ? 'الليلي' : 'النهاري'}`, 'info');
+}
+
+// Set default theme
+document.documentElement.setAttribute('data-theme', 'dark');
 
 // Toast System
 function showToast(message, type = 'info') {
@@ -121,46 +141,148 @@ async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
 
-    // Ethical Monitoring (Safe Mode)
-    const cheatKeywords = ['حل', 'اعطني', 'اجابة', 'الجواب', 'solve', 'answer'];
-    if (cheatKeywords.some(kw => text.includes(kw))) {
+    totalQuestions++;
+    
+    // Smart Anti-Cheat (Intelligent Redirection)
+    const cheatRegex = /(حل|اعطني|اجابة|الجواب|solve|answer|just give it)/i;
+    if (cheatRegex.test(text)) {
         liveCheatCount++;
-        const liveCountEl = document.getElementById('liveCheatCount');
-        if(liveCountEl) {
-            liveCountEl.innerText = `${liveCheatCount} مخالفات`;
-            liveCountEl.className = 'text-red';
-        }
-        document.getElementById('teacherCheatCounter').innerText = 342 + liveCheatCount;
+        updateIndependenceScore(-5);
+        showToast('تنبيه: محاولة غش مكتشفة! تذكر أن الفهم هو هدفنا.', 'danger');
         
-        showToast('تنبيه: محاولة غش مكتشفة! تم إرسال تقرير فوري للجنة التحكيم.', 'danger');
-
-        // Add to feed
-        const feed = document.getElementById('activityFeed');
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'feed-item danger';
-        alertDiv.innerHTML = `<i class="fa-solid fa-shield-alert"></i><div><p><strong>تنبيه أمني:</strong> محاولة استخراج حل مباشر من قبل الطالب.</p><span>الآن</span></div>`;
-        feed.prepend(alertDiv);
+        appendMessage(text, true);
+        userInput.value = '';
+        
+        showThinking();
+        setTimeout(() => {
+            removeThinking();
+            appendMessage("أفهم أنك تريد الوصول للحل بسرعة، ولكن لنجرب التفكير في أول خطوة معاً. هل يمكنك إخباري ما هو المعطى الأول في المسألة؟", false);
+        }, 1500);
+        return;
     }
 
     appendMessage(text, true);
     userInput.value = '';
 
-    // Thinking placeholder
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message bot-message';
-    typingDiv.innerHTML = `<img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar"><div class="msg-content glass-msg"><i class="fa-solid fa-ellipsis fa-fade"></i></div>`;
-    chatBox.appendChild(typingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    showThinking();
 
     try {
-        const response = await fetch(`/api/chat?text=${encodeURIComponent(text)}`);
+        const response = await fetch(`/api/chat?text=${encodeURIComponent(text)}${isChallengeMode ? '&mode=challenge' : ''}`);
         const data = await response.json();
-        chatBox.removeChild(typingDiv);
-        appendMessage(data.reply || "أنا هنا للمساعدة، دعنا نفكر في الخطوة التالية سوياً.", false);
+        removeThinking();
+        
+        const reply = data.reply || "أنا هنا للمساعدة، دعنا نفكر في الخطوة التالية سوياً.";
+        
+        // Split reply into hints if it contains steps
+        if (reply.includes('الخطوة')) {
+            currentHints = reply.split(/\n|الخطوة \d+:/).filter(h => h.trim().length > 5);
+            currentHintIndex = 0;
+            displayHint(currentHints[0]);
+            showHintControls();
+            startHintTimer();
+        } else {
+            appendMessage(reply, false);
+            hideHintControls();
+        }
     } catch (error) {
-        chatBox.removeChild(typingDiv);
+        removeThinking();
         appendMessage('عذراً، فشل الاتصال بخوادم SafeLearn. يرجى المحاولة لاحقاً.', false);
     }
+}
+
+function showThinking() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message thinking-msg';
+    typingDiv.id = 'thinkingDiv';
+    typingDiv.innerHTML = `
+        <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
+        <div class="msg-content glass-msg">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `;
+    chatBox.appendChild(typingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function removeThinking() {
+    const div = document.getElementById('thinkingDiv');
+    if (div) div.remove();
+}
+
+function showHintControls() {
+    document.getElementById('hintRevealControl').classList.remove('hidden');
+}
+
+function hideHintControls() {
+    document.getElementById('hintRevealControl').classList.add('hidden');
+}
+
+function startHintTimer() {
+    let seconds = 10;
+    const timerEl = document.getElementById('hintTimer');
+    const btn = document.getElementById('nextHintBtn');
+    
+    btn.disabled = true;
+    timerEl.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+    
+    if (hintTimerInterval) clearInterval(hintTimerInterval);
+    
+    hintTimerInterval = setInterval(() => {
+        seconds--;
+        timerEl.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+        if (seconds <= 0) {
+            clearInterval(hintTimerInterval);
+            btn.disabled = false;
+            showToast('يمكنك الآن الانتقال للتلميح التالي', 'info');
+        }
+    }, 1000);
+}
+
+function revealNextHint() {
+    currentHintIndex++;
+    hintsUsedTotal++;
+    updateIndependenceScore(-2);
+    
+    if (currentHintIndex < currentHints.length) {
+        displayHint(currentHints[currentHintIndex]);
+        if (currentHintIndex === currentHints.length - 1) {
+            hideHintControls();
+        } else {
+            startHintTimer();
+        }
+    }
+}
+
+function displayHint(text) {
+    appendMessage(text, false);
+    if (isVoiceTutorActive) speakText(text);
+}
+
+function updateIndependenceScore(change) {
+    let currentScore = parseInt(document.getElementById('independenceScore').innerText);
+    currentScore = Math.max(0, Math.min(100, currentScore + change));
+    document.getElementById('independenceScore').innerText = `${currentScore}%`;
+    document.querySelector('.progress-fill').style.width = `${currentScore}%`;
+}
+
+function toggleVoiceTutor() {
+    isVoiceTutorActive = !isVoiceTutorActive;
+    const btn = document.getElementById('voiceTutorBtn');
+    btn.classList.toggle('active');
+    showToast(`تم ${isVoiceTutorActive ? 'تفعيل' : 'تعطيل'} المعلم الصوتي`, 'info');
+}
+
+function speakText(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA';
+    window.speechSynthesis.speak(utterance);
+}
+
+function toggleChallengeMode() {
+    isChallengeMode = !isChallengeMode;
+    const btn = document.getElementById('challengeModeBtn');
+    btn.classList.toggle('active');
+    showToast(`تم ${isChallengeMode ? 'تفعيل' : 'تعطيل'} وضع التحدي 🔥`, 'warning');
 }
 
 // Auth UI Flow
