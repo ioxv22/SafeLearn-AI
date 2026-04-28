@@ -250,11 +250,62 @@ function appendMessage(text, isUser) {
     chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
 }
 
+function revealNextHint() {
+    currentHintIndex++;
+    hintsUsedTotal++;
+    updateIndependenceScore(-2);
+    updateBehaviorScore(-1);
+    
+    if (currentHintIndex < currentHints.length) {
+        // Story Mode: Add step labels for a guided journey
+        const stepLabel = `📍 الخطوة ${currentHintIndex + 1}: `;
+        displayHint(stepLabel + currentHints[currentHintIndex]);
+        
+        if (currentHintIndex === currentHints.length - 1) {
+            hideHintControls();
+            showMicroReflection();
+        } else {
+            startHintTimer();
+        }
+    }
+}
+
 function showMicroReflection() {
     setTimeout(() => {
-        appendMessage("🎉 رائع! لقد وصلت لنهاية التلميحات. أخبرني بكلمة واحدة، ما هو المفهوم الجديد الذي تعلمته الآن؟", false);
-        updateBehaviorScore(5); // Reflection bonus
+        appendMessage("🎉 مذهل! لقد أكملت التحدي بنجاح. ما هو أكثر جزء شعرت فيه بالفخر بنفسك أثناء التفكير؟", false);
+        updateBehaviorScore(5);
+        showSessionSummary();
     }, 2000);
+}
+
+function showSessionSummary() {
+    const improvement = Math.floor(Math.random() * 10) + 5; 
+    const summaryMsg = `
+        <div class="session-summary glass-panel fade-in">
+            <h4 style="margin-bottom:10px;">📈 ملخص النمو المعرفي</h4>
+            <div class="summary-stats" style="display:flex; gap:15px; margin-bottom:15px;">
+                <div class="s-stat" style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                    <span style="font-size:0.8rem; display:block;">تطور الاستقلالية</span>
+                    <strong style="color:var(--success); font-size:1.2rem;">+${improvement}% اليوم</strong>
+                </div>
+                <div class="s-stat" style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                    <span style="font-size:0.8rem; display:block;">جودة التفكير</span>
+                    <strong style="color:var(--primary); font-size:1.2rem;">ممتاز ✨</strong>
+                </div>
+            </div>
+            <p style="font-size:0.9rem; border-top:1px solid var(--glass-border); padding-top:10px;">💡 <strong>رؤية المعلم:</strong> لقد بدأت تعتمد على التفكير المنطقي أكثر من طلب المساعدة المباشرة. هذا هو سر النجاح!</p>
+        </div>
+    `;
+    setTimeout(() => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message bot-message';
+        msgDiv.innerHTML = `
+            <img src="https://ui-avatars.com/api/?name=AI&background=10b981&color=fff" class="msg-avatar">
+            <div class="msg-content no-bg" style="background:transparent !important; border:none !important; box-shadow:none !important; padding:0 !important;">${summaryMsg}</div>
+        `;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+    }, 3000);
 }
 
 function updateBehaviorScore(change) {
