@@ -163,6 +163,67 @@ async function sendMessage() {
     }
 }
 
+// Auth UI Flow
+function showRegister() {
+    document.getElementById('loginStep1').classList.add('hidden');
+    document.getElementById('registerStep').classList.remove('hidden');
+}
+
+function showLogin() {
+    document.getElementById('loginStep1').classList.remove('hidden');
+    document.getElementById('registerStep').classList.add('hidden');
+}
+
+function finalizeRegister() {
+    const name = document.getElementById('regName').value;
+    if(!name) return showToast('يرجى إدخال اسمك أولاً', 'warning');
+    
+    showToast(`مرحباً ${name}! جاري تهيئة بيئة التعلم الآمنة...`, 'success');
+    setTimeout(() => {
+        currentUser = { role: 'student', name: name };
+        loginPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+    }, 1500);
+}
+
+function simulateGoogleLogin() {
+    showToast('جاري الاتصال بحساب جوجل...', 'info');
+    setTimeout(() => {
+        currentUser = { role: 'student', name: 'مستخدم جوجل' };
+        loginPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+        showToast('تم الدخول بواسطة جوجل بنجاح', 'success');
+    }, 1500);
+}
+
+// Teacher Class Creation
+const createClassModal = document.getElementById('createClassModal');
+
+function showCreateClassModal() {
+    createClassModal.classList.remove('hidden');
+    document.querySelector('.class-setup').classList.remove('hidden');
+    document.getElementById('classResult').classList.add('hidden');
+}
+
+function closeCreateClassModal() {
+    createClassModal.classList.add('hidden');
+}
+
+function generateClassCode() {
+    const className = document.getElementById('newClassName').value;
+    if(!className) return showToast('يرج(' + 'يرجى إدخال اسم المادة أولاً', 'warning');
+    
+    showToast('جاري تشفير وتفعيل الفصل الدراسي...', 'info');
+    
+    setTimeout(() => {
+        const code = 'SAFE-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('generatedCode').innerText = code;
+        document.querySelector('.class-setup').classList.add('hidden');
+        document.getElementById('classResult').classList.remove('hidden');
+        showToast('تم تفعيل الفصل بنجاح!', 'success');
+    }, 1500);
+}
+
 // Video Search (YouTube)
 document.getElementById('submitVideoBtn').onclick = async () => {
     const prompt = document.getElementById('videoPromptInput').value.trim();

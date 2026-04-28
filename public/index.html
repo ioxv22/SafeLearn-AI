@@ -24,22 +24,53 @@
         </div>
         
         <form id="loginForm" class="login-form">
-            <div class="input-group">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="emailInput" placeholder="البريد الإلكتروني الجامعي / المدرسي" required value="student@university.edu">
+            <div id="loginStep1">
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="emailInput" placeholder="البريد الإلكتروني الجامعي / المدرسي" required value="student@university.edu">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passwordInput" placeholder="كلمة المرور" required value="123456">
+                </div>
+                
+                <button type="submit" class="btn-glow">
+                    <span>تسجيل الدخول للمنصة</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+
+                <div class="divider"><span>أو</span></div>
+
+                <button type="button" class="btn-google" onclick="simulateGoogleLogin()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20">
+                    <span>الدخول بواسطة جوجل</span>
+                </button>
+                
+                <div class="login-links">
+                    <a href="#" onclick="showRegister()">إنشاء حساب جديد</a>
+                    <a href="#">نسيت كلمة المرور؟</a>
+                </div>
             </div>
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="passwordInput" placeholder="كلمة المرور" required value="123456">
+
+            <div id="registerStep" class="hidden">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" placeholder="الاسم الكامل" id="regName">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <input type="text" placeholder="كود الفصل (اختياري)" id="regClassCode">
+                </div>
+                <button type="button" class="btn-glow" onclick="finalizeRegister()">
+                    <span>إنشاء الحساب والبدء</span>
+                </button>
+                <div class="login-links">
+                    <a href="#" onclick="showLogin()">لديك حساب؟ سجل دخول</a>
+                </div>
             </div>
-            
-            <button type="submit" class="btn-glow">
-                <span>تسجيل الدخول للمنصة</span>
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
             
             <div class="login-footer">
-                <p>نظام مدعوم بالذكاء الاصطناعي الأخلاقي (Zero-Cheating)</p>
+                <p><i class="fa-solid fa-shield-check"></i> نظام مدعوم بالذكاء الاصطناعي الأخلاقي</p>
             </div>
         </form>
     </div>
@@ -123,6 +154,10 @@
                         <p>نظام الرصد الحي والتحليل الأخلاقي لتعلم الطلاب</p>
                     </div>
                     <div class="header-actions">
+                        <button class="btn-premium" onclick="showCreateClassModal()">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>تفعيل فصل دراسي جديد</span>
+                        </button>
                         <div class="user-profile">
                             <div class="user-text">
                                 <span class="user-name">رئيس لجنة التحكيم</span>
@@ -236,6 +271,34 @@
 
     <!-- Toast Container -->
     <div id="toast-container"></div>
+
+    <!-- Create Class Modal -->
+    <div id="createClassModal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="closeCreateClassModal()">&times;</span>
+            <div class="modal-header">
+                <i class="fa-solid fa-school-flag"></i>
+                <h2>تفعيل فصل دراسي ذكي</h2>
+            </div>
+            <div class="class-setup">
+                <div class="input-group">
+                    <input type="text" id="newClassName" placeholder="اسم المادة (مثال: علوم الحاسوب)">
+                </div>
+                <button class="btn-glow" onclick="generateClassCode()">توليد كود الدخول</button>
+            </div>
+            <div id="classResult" class="hidden">
+                <div class="code-display">
+                    <p>كود الفصل الخاص بك:</p>
+                    <h2 id="generatedCode">SAFE-8821</h2>
+                </div>
+                <div class="qr-mock">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <p>أو امسح الباركود للدخول المباشر</p>
+                </div>
+                <button class="btn-premium" style="width:100%" onclick="closeCreateClassModal()">تم، الفصل جاهز</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Video Modal -->
     <div id="videoModal" class="modal hidden">

@@ -165,6 +165,57 @@ body {
     color: var(--success);
 }
 
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--glass-border);
+}
+
+.btn-google {
+    width: 100%;
+    padding: 1rem;
+    background: white;
+    color: #1f2937;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-google:hover {
+    background: #f3f4f6;
+    transform: translateY(-2px);
+}
+
+.login-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.login-links a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.login-links a:hover { text-decoration: underline; }
+
 /* App Container */
 .container {
     width: 100%;
@@ -643,3 +694,32 @@ header {
 .toast.info i { color: var(--primary); }
 .toast.warning i { color: #fbbf24; }
 .toast.danger i { color: #ef4444; }
+
+/* Create Class Modal Specifics */
+.class-setup {
+    margin-top: 2rem;
+}
+
+.code-display {
+    background: rgba(0,0,0,0.3);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px dashed var(--primary);
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.code-display p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.code-display h2 { font-size: 3rem; letter-spacing: 5px; color: var(--secondary); margin: 0; }
+
+.qr-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+    opacity: 0.7;
+}
+
+.qr-mock i { font-size: 6rem; }
+
