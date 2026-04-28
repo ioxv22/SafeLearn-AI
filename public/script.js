@@ -16,27 +16,53 @@ const closeModal = document.getElementById('closeModal');
 // Views & Menu
 const studentChatView = document.getElementById('studentChatView');
 const teacherDashboardView = document.getElementById('teacherDashboardView');
+const classroomView = document.getElementById('classroomView');
+const reportsView = document.getElementById('reportsView');
+
 const menuTeacherAI = document.getElementById('menuTeacherAI');
 const menuTeacherControl = document.getElementById('menuTeacherControl');
 const menuClassroom = document.getElementById('menuClassroom');
 const menuReports = document.getElementById('menuReports');
+
+// Toast System
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    let icon = 'info-circle';
+    if(type === 'success') icon = 'check-circle';
+    if(type === 'warning') icon = 'exclamation-triangle';
+    if(type === 'danger') icon = 'shield-alert';
+    
+    toast.innerHTML = `<i class="fa-solid fa-${icon}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-20px)';
+        setTimeout(() => container.removeChild(toast), 300);
+    }, 4000);
+}
 
 // Login Flow
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('emailInput').value;
     const btn = loginForm.querySelector('.btn-glow');
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق من البروتوكولات...';
     
     setTimeout(() => {
         if (email.includes('admin') || email.includes('teacher')) {
-            currentUser = { role: 'teacher', name: 'لجنة التحكيم' };
+            currentUser = { role: 'teacher', name: 'رئيس لجنة التحكيم' };
             menuTeacherControl.classList.remove('hidden');
             showView('teacherDashboardView');
+            showToast('مرحباً بك حضرة المحكم. نظام الرقابة والتحكم نشط بالكامل.', 'success');
         } else {
             currentUser = { role: 'student', name: 'الطالب التجريبي' };
             menuTeacherControl.classList.add('hidden');
             showView('studentChatView');
+            showToast('تم الدخول بنجاح. تذكر: العلم يبنى بالفهم وليس بالنقل.', 'info');
         }
         
         loginPage.classList.add('hidden');
@@ -53,16 +79,19 @@ function showView(viewId) {
     document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
     if (viewId === 'studentChatView') menuTeacherAI.classList.add('active');
     if (viewId === 'teacherDashboardView') menuTeacherControl.classList.add('active');
+    if (viewId === 'classroomView') menuClassroom.classList.add('active');
+    if (viewId === 'reportsView') menuReports.classList.add('active');
 }
 
 menuTeacherAI.onclick = () => showView('studentChatView');
 menuTeacherControl.onclick = () => showView('teacherDashboardView');
-menuClassroom.onclick = () => alert('هذه الميزة ستكون متاحة في النسخة النهائية لإدارة الفصول.');
-menuReports.onclick = () => alert('تقارير مفصلة عن أداء الطلاب والنزاهة الأكاديمية.');
+menuClassroom.onclick = () => showView('classroomView');
+menuReports.onclick = () => showView('reportsView');
 
 logoutBtn.addEventListener('click', () => {
     appPage.classList.add('hidden');
     loginPage.classList.remove('hidden');
+    showToast('تم تسجيل الخروج بأمان.', 'info');
 });
 
 // Modal Flow
@@ -96,14 +125,20 @@ async function sendMessage() {
     const cheatKeywords = ['حل', 'اعطني', 'اجابة', 'الجواب', 'solve', 'answer'];
     if (cheatKeywords.some(kw => text.includes(kw))) {
         liveCheatCount++;
-        document.getElementById('liveCheatCount').innerText = liveCheatCount;
+        const liveCountEl = document.getElementById('liveCheatCount');
+        if(liveCountEl) {
+            liveCountEl.innerText = `${liveCheatCount} مخالفات`;
+            liveCountEl.className = 'text-red';
+        }
         document.getElementById('teacherCheatCounter').innerText = 342 + liveCheatCount;
         
+        showToast('تنبيه: محاولة غش مكتشفة! تم إرسال تقرير فوري للجنة التحكيم.', 'danger');
+
         // Add to feed
         const feed = document.getElementById('activityFeed');
         const alertDiv = document.createElement('div');
         alertDiv.className = 'feed-item danger';
-        alertDiv.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i><div><p><strong>تنبيه:</strong> محاولة استخراج حل مباشر!</p><span>الآن</span></div>`;
+        alertDiv.innerHTML = `<i class="fa-solid fa-shield-alert"></i><div><p><strong>تنبيه أمني:</strong> محاولة استخراج حل مباشر من قبل الطالب.</p><span>الآن</span></div>`;
         feed.prepend(alertDiv);
     }
 
@@ -150,13 +185,13 @@ document.getElementById('submitVideoBtn').onclick = async () => {
         if(data.success && data.videoId) {
             iframe.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=1`;
             iframe.classList.remove('hidden');
+            showToast('تم العثور على أفضل شرح مرئي لموضوعك.', 'success');
         } else {
-            // Fallback
             iframe.src = `https://www.youtube.com/embed/NybHckSEQBI?autoplay=1`;
             iframe.classList.remove('hidden');
         }
     } catch(err) {
-        loader.innerHTML = "<p style='color:#ef4444'>خطأ في الاتصال بالخادم.</p>";
+        showToast('خطأ في الاتصال بخدمة الفيديو.', 'danger');
     }
     btn.innerHTML = 'بدء العرض';
 }

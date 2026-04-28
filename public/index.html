@@ -119,18 +119,21 @@
             <div id="teacherDashboardView" class="view-section hidden">
                 <header>
                     <div class="header-title">
-                        <h3>لوحة تحكم المعلم</h3>
-                        <p>راقب أداء الطلاب واحمِ نزاهة التعليم</p>
+                        <h3>مركز التحكم والرقابة الذكية (لجنة التحكيم)</h3>
+                        <p>نظام الرصد الحي والتحليل الأخلاقي لتعلم الطلاب</p>
                     </div>
                     <div class="header-actions">
-                        <button class="btn-premium">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>إنشاء فصل جديد</span>
-                        </button>
+                        <div class="user-profile">
+                            <div class="user-text">
+                                <span class="user-name">رئيس لجنة التحكيم</span>
+                                <span class="user-level text-emerald">صلاحية كاملة (SuperAdmin)</span>
+                            </div>
+                            <img src="https://ui-avatars.com/api/?name=JD&background=10b981&color=fff" alt="Judge Avatar">
+                        </div>
                     </div>
                 </header>
 
-                <div class="dashboard-stats grid">
+                <div class="dashboard-stats">
                     <div class="stat-card glass-panel">
                         <i class="fa-solid fa-users text-blue"></i>
                         <div>
@@ -139,72 +142,100 @@
                         </div>
                     </div>
                     <div class="stat-card glass-panel">
-                        <i class="fa-solid fa-triangle-exclamation text-red"></i>
+                        <i class="fa-solid fa-shield-virus text-red"></i>
                         <div>
-                            <h4>محاولات غش</h4>
+                            <h4>محاولات اختراق محظورة</h4>
                             <p id="teacherCheatCounter">342</p>
                         </div>
                     </div>
                     <div class="stat-card glass-panel">
-                        <i class="fa-solid fa-brain text-emerald"></i>
+                        <i class="fa-solid fa-bolt text-emerald"></i>
                         <div>
-                            <h4>معدل الفهم</h4>
-                            <p>78%</p>
+                            <h4>كفاءة الذكاء الاصطناعي</h4>
+                            <p>99.9%</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard-content grid">
                     <div class="student-list glass-panel">
-                        <h3>قائمة الطلاب النشطة</h3>
+                        <h3>مراقبة الطلاب (بث حي)</h3>
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>الطالب</th>
                                     <th>الحالة</th>
-                                    <th>محاولات الغش</th>
+                                    <th>السلوك الأخلاقي</th>
                                     <th>الإجراء</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>الطالب التجريبي</td>
-                                    <td><span class="status-online">أونلاين</span></td>
-                                    <td><strong id="liveCheatCount">0</strong></td>
-                                    <td><button class="btn-small">متابعة</button></td>
+                                    <td><span class="status-online">نشط حالياً</span></td>
+                                    <td><strong id="liveCheatCount" class="text-emerald">0 مخالفات</strong></td>
+                                    <td><button class="btn-small">فتح البث</button></td>
                                 </tr>
                                 <tr>
                                     <td>ياسين محمد</td>
-                                    <td><span class="status-offline">أوفلاين</span></td>
-                                    <td>0</td>
-                                    <td><button class="btn-small">سجل</button></td>
+                                    <td><span class="status-offline">غير متصل</span></td>
+                                    <td class="text-muted">سليم</td>
+                                    <td><button class="btn-small">السجل</button></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="activity-feed glass-panel">
-                        <h3>آخر التنبيهات</h3>
+                        <h3>سجل الأمان الحي</h3>
                         <div class="feed-items" id="activityFeed">
-                            <div class="feed-item danger">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                                <div>
-                                    <p><strong>سلطان:</strong> حاول طلب حل مباشر لمسألة تفاضل</p>
-                                    <span>الآن</span>
-                                </div>
-                            </div>
                             <div class="feed-item success">
-                                <i class="fa-solid fa-check-circle"></i>
+                                <i class="fa-solid fa-shield-check"></i>
                                 <div>
-                                    <p><strong>مريم:</strong> أكملت درس الخلية بنجاح</p>
-                                    <span>قبل ٥ دقائق</span>
+                                    <p><strong>النظام:</strong> جميع بروتوكولات الأمان تعمل بكفاءة</p>
+                                    <span>الآن</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Classroom View -->
+            <div id="classroomView" class="view-section hidden">
+                <header>
+                    <div class="header-title">
+                        <h3>إدارة الفصول الدراسية</h3>
+                        <p>تنظيم المواد والطلاب وتوزيع المهام التعليمية</p>
+                    </div>
+                </header>
+                <div class="empty-state">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <h3>الفصول الدراسية الذكية</h3>
+                    <p>هذه الميزة تتيح للمعلم ربط الطلاب ببيئة تعلم آمنة. تم إعداد ٣ فصول افتراضية مسبقاً.</p>
+                    <button class="btn-premium">عرض الفصول الافتراضية</button>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reportsView" class="view-section hidden">
+                <header>
+                    <div class="header-title">
+                        <h3>تقارير النزاهة والتقدم</h3>
+                        <p>تحليلات عميقة حول سلوك الطلاب وتطورهم الأكاديمي</p>
+                    </div>
+                </header>
+                <div class="empty-state">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h3>تحليلات البيانات الضخمة</h3>
+                    <p>يتم الآن تحليل أكثر من ١٠,٠٠٠ محادثة تعليمية لإنتاج تقارير الدقة الأخلاقية.</p>
+                    <button class="btn-premium">توليد تقرير شامل</button>
+                </div>
+            </div>
         </main>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
     <!-- Video Modal -->
     <div id="videoModal" class="modal hidden">
