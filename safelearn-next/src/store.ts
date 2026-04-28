@@ -13,6 +13,7 @@ interface StoreState {
   isLoading: boolean;
   safeMode: boolean;
   examMode: boolean;
+  activeClass: any | null; // Added this
   progress: {
     solved: number;
     hintsUsed: number;
@@ -22,6 +23,7 @@ interface StoreState {
   setLoading: (loading: boolean) => void;
   setSafeMode: (mode: boolean) => void;
   setExamMode: (mode: boolean) => void;
+  setActiveClass: (cls: any | null) => void; // Added this
   addProgress: (type: 'solved' | 'hint') => void;
 }
 
@@ -30,6 +32,7 @@ export const useStore = create<StoreState>((set) => ({
   isLoading: true,
   safeMode: true,
   examMode: false,
+  activeClass: null, // Initial value
   progress: {
     solved: 5,
     hintsUsed: 12,
@@ -39,6 +42,7 @@ export const useStore = create<StoreState>((set) => ({
   setLoading: (loading) => set({ isLoading: loading }),
   setSafeMode: (mode) => set({ safeMode: mode }),
   setExamMode: (mode) => set({ examMode: mode }),
+  setActiveClass: (cls) => set({ activeClass: cls }), // Implementation
   addProgress: (type) => set((state) => ({
     progress: {
       ...state.progress,
